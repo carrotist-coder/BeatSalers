@@ -1,3 +1,5 @@
 /server/node_modules/
 .idea/
 /server/.env
+*.db
+*.sqlite
