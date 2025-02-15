@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = function (role) {
+module.exports = function (role, requireAuth = true) {
     return function (req, res, next) {
         if (req.method === 'OPTIONS') {
             next();
@@ -11,11 +11,17 @@ module.exports = function (role) {
             const authHeader = req.headers.authorization;
 
             if (!authHeader) {
+                if (!requireAuth) {
+                    return next();
+                }
                 return res.status(401).json({ message: 'Не авторизован' });
             }
 
             const token = authHeader.split(' ')[1];
             if (!token) {
+                if (!requireAuth) {
+                    return next();
+                }
                 return res.status(401).json({ message: 'Некорректный токен' });
             }
 
@@ -28,6 +34,9 @@ module.exports = function (role) {
 
             next();
         } catch (e) {
+            if (!requireAuth) {
+                return next();
+            }
             res.status(401).json({ message: 'Не авторизован' });
         }
     };
