@@ -20,7 +20,7 @@ router.put('/:id', authMiddleware(null), usersController.updateUser);
 // Удалить пользователя (только админ)
 router.delete('/:id', authMiddleware('admin'), usersController.deleteUser);
 
-// Получить пользователя по полю (например, username или email) (только админ)
-router.get('/:field/:value', authMiddleware('admin'), usersController.getUserByField);
+// Получить пользователя по username
+router.get('/:username', authMiddleware(null, false), usersController.getUserByUsername);
 
 module.exports = router;

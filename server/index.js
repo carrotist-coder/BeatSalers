@@ -14,7 +14,7 @@ app.use(express.json());
 app.use('/', routes);
 
 // Middleware для обработки ошибок
-app.use((err, req, res, next) => {
+app.use((err, req, res) => {
     console.error(err.stack);
 
     res.status(err.status || 500).json({
