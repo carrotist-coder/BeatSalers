@@ -46,7 +46,7 @@ const initializeDatabase = () => {
 
         // Создаем таблицу UserProfiles
         db.run(`CREATE TABLE IF NOT EXISTS user_profiles (
-                                                             user_id INTEGER PRIMARY KEY,
+                                                             user_id INTEGER UNIQUE,
                                                              name TEXT NOT NULL,
                                                              bio TEXT,
                                                              social_media_link TEXT,

@@ -42,6 +42,7 @@ const addUser = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 5);
     const createdAt = new Date().toISOString();
 
+    // Создание пользователя в таблице users
     db.run(
         'INSERT INTO users (username, password, email, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
         [username, hashedPassword, email, role, createdAt, createdAt],
@@ -52,7 +53,31 @@ const addUser = async (req, res, next) => {
                 }
                 return next(ApiError.internal('Ошибка при добавлении пользователя'));
             }
-            res.status(201).json({ message: 'Пользователь успешно создан', userId: this.lastID });
+
+            const userId = this.lastID;
+            // Создание профиля в таблице user_profiles
+            console.log('Creating profile with:', {
+                userId,
+                name: 'Unnamed',
+                bio: null,
+                social_media_link: null,
+                createdAt,
+                updatedAt: createdAt,
+            });
+            db.run(
+                'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+                [userId, 'Unnamed', null, null, createdAt, createdAt],
+                function (profileErr) {
+                    if (profileErr) {
+                        // Если произошла ошибка при создании профиля, удаляем пользователя
+                        db.run('DELETE FROM users WHERE id = ?', [userId], () => {
+                            return next(ApiError.internal('Ошибка при создании профиля пользователя'));
+                        });
+                        return;
+                    }
+                    res.status(201).json({ message: 'Пользователь и профиль успешно созданы', userId });
+                }
+            );
         }
     );
 };
@@ -135,14 +160,24 @@ const deleteUser = (req, res, next) => {
         return next(ApiError.forbidden('Вы не можете удалить свой профиль.'));
     }
 
-    db.run('DELETE FROM users WHERE id = ?', [userId], function (err) {
-        if (err) {
-            return next(ApiError.internal('Ошибка при удалении пользователя'));
+    // Удаление профиля пользователя из таблицы user_profiles
+    db.run('DELETE FROM user_profiles WHERE user_id = ?', [userId], function (profileErr) {
+        if (profileErr) {
+            return next(ApiError.internal('Ошибка при удалении профиля пользователя'));
         }
-        if (this.changes === 0) {
-            return next(ApiError.notFound('Пользователь не найден'));
-        }
-        res.status(200).json({ message: 'Пользователь успешно удален' });
+
+        // Удаление пользователя из таблицы users
+        db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
+            if (userErr) {
+                return next(ApiError.internal('Ошибка при удалении пользователя'));
+            }
+
+            if (this.changes === 0) {
+                return next(ApiError.notFound('Пользователь не найден'));
+            }
+
+            res.status(200).json({ message: 'Пользователь и его профиль успешно удалены' });
+        });
     });
 };
 
