@@ -160,23 +160,55 @@ const deleteUser = (req, res, next) => {
         return next(ApiError.forbidden('Вы не можете удалить свой профиль.'));
     }
 
-    // Удаление профиля пользователя из таблицы user_profiles
-    db.run('DELETE FROM user_profiles WHERE user_id = ?', [userId], function (profileErr) {
-        if (profileErr) {
-            return next(ApiError.internal('Ошибка при удалении профиля пользователя'));
+    // Начало транзакции
+    db.run('BEGIN TRANSACTION', (err) => {
+        if (err) {
+            return next(ApiError.internal('Ошибка начала транзакции'));
         }
 
-        // Удаление пользователя из таблицы users
-        db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
-            if (userErr) {
-                return next(ApiError.internal('Ошибка при удалении пользователя'));
+        // Удаление всех битов пользователя из таблицы beats
+        db.run('DELETE FROM beats WHERE seller_id = ?', [userId], function (beatsErr) {
+            if (beatsErr) {
+                db.run('ROLLBACK', () => {
+                    return next(ApiError.internal('Ошибка при удалении битов пользователя'));
+                });
+                return;
             }
 
-            if (this.changes === 0) {
-                return next(ApiError.notFound('Пользователь не найден'));
-            }
+            // Удаление профиля пользователя из таблицы user_profiles
+            db.run('DELETE FROM user_profiles WHERE user_id = ?', [userId], function (profileErr) {
+                if (profileErr) {
+                    db.run('ROLLBACK', () => {
+                        return next(ApiError.internal('Ошибка при удалении профиля пользователя'));
+                    });
+                    return;
+                }
 
-            res.status(200).json({ message: 'Пользователь и его профиль успешно удалены' });
+                // Удаление пользователя из таблицы users
+                db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
+                    if (userErr) {
+                        db.run('ROLLBACK', () => {
+                            return next(ApiError.internal('Ошибка при удалении пользователя'));
+                        });
+                        return;
+                    }
+
+                    if (this.changes === 0) {
+                        db.run('ROLLBACK', () => {
+                            return next(ApiError.notFound('Пользователь не найден'));
+                        });
+                        return;
+                    }
+
+                    // Если всё успешно, завершаем транзакцию
+                    db.run('COMMIT', (commitErr) => {
+                        if (commitErr) {
+                            return next(ApiError.internal('Ошибка завершения транзакции'));
+                        }
+                        res.status(200).json({ message: 'Пользователь, его профиль и все биты успешно удалены' });
+                    });
+                });
+            });
         });
     });
 };
