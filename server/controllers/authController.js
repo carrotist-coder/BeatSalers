@@ -85,9 +85,14 @@ const register = async (req, res, next) => {
                 if (err.message.includes('UNIQUE constraint failed')) {
                     return next(ApiError.internal('Имя пользователя или email уже занято.'));
                 }
-                return next(ApiError.internal('Ошибка при регистрации пользователя'));
+                return next(ApiError.internal('Ошибка при добавлении пользователя'));
             }
-            res.status(201).json({ message: 'Пользователь успешно зарегистрирован', userId: this.lastID });
+
+            // Генерация JWT-токена после успешной регистрации
+            const token = jwt.sign({ id: this.lastID, role }, process.env.SECRET_KEY, { expiresIn: '1h' });
+
+            // Возвращаем токен клиенту
+            res.status(201).json({ message: 'Пользователь успешно создан', token });
         }
     );
 };
