@@ -25,10 +25,40 @@ const login = async (req, res, next) => {
             return next(ApiError.badRequest('Неправильный пароль.'));
         }
 
-        // Генерация JWT токена
+        // Генерация JWT-токена
         const token = jwt.sign({ id: row.id, role: row.role }, process.env.SECRET_KEY, { expiresIn: '1h' });
-        res.status(200).json({ message: 'Успешная аутентификация', user: { id: row.id, username: row.username, role: row.role }, token });
+        res.status(200).json({ message: 'Успешная аутентификация', token });
     });
+};
+
+// Метод для проверки токена
+const check = (req, res, next) => {
+    const token = req.headers.authorization?.split(' ')[1];
+
+    if (!token) {
+        return next(ApiError.forbidden('Необходима авторизация'));
+    }
+
+    try {
+        const decoded = jwt.verify(token, process.env.SECRET_KEY);
+
+        // Обновляем токен (опционально)
+        const newToken = jwt.sign({ id: decoded.id, role: decoded.role }, process.env.SECRET_KEY, { expiresIn: '1h' });
+
+        // Получаем данные пользователя из базы данных
+        db.get('SELECT id, username, email, role FROM users WHERE id = ?', [decoded.id], (err, row) => {
+            if (err) {
+                return next(ApiError.internal('Ошибка при получении данных пользователя'));
+            }
+            if (!row) {
+                return next(ApiError.notFound('Пользователь не найден'));
+            }
+
+            res.status(200).json({ user: row, token: newToken });
+        });
+    } catch (error) {
+        return next(ApiError.forbidden('Недействительный токен'));
+    }
 };
 
 // Метод для регистрации нового пользователя
@@ -64,5 +94,6 @@ const register = async (req, res, next) => {
 
 module.exports = {
     login,
+    check,
     register,
 };
