@@ -38,22 +38,35 @@ const updateMyProfile = (req, res, next) => {
     );
 };
 
-// Получить профиль другого пользователя по ID
-const getProfileById = (req, res, next) => {
-    const profileId = parseInt(req.params.id, 10);
+// Получить профиль пользователя по username
+const getProfileByUsername = (req, res, next) => {
+    const username = req.params.username;
 
-    if (!profileId) {
-        return next(ApiError.badRequest('ID профиля обязателен'));
+    if (!username) {
+        return next(ApiError.badRequest('Имя пользователя обязательно.'));
     }
 
-    db.get('SELECT * FROM user_profiles WHERE user_id = ?', [profileId], (err, row) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка при получении профиля'));
+    // Сначала находим ID пользователя по username
+    db.get('SELECT id FROM users WHERE username = ?', [username], (userErr, userRow) => {
+        if (userErr) {
+            return next(ApiError.internal('Ошибка при поиске пользователя'));
         }
-        if (!row) {
-            return next(ApiError.notFound('Профиль не найден'));
+        if (!userRow) {
+            return next(ApiError.notFound('Пользователь не найден'));
         }
-        res.status(200).json(row);
+
+        const userId = userRow.id;
+
+        // Затем находим профиль по user_id
+        db.get('SELECT * FROM user_profiles WHERE user_id = ?', [userId], (profileErr, profileRow) => {
+            if (profileErr) {
+                return next(ApiError.internal('Ошибка при получении профиля'));
+            }
+            if (!profileRow) {
+                return next(ApiError.notFound('Профиль не найден'));
+            }
+            res.status(200).json(profileRow);
+        });
     });
 };
 
@@ -86,6 +99,6 @@ const updateAnyProfile = (req, res, next) => {
 module.exports = {
     getMyProfile,
     updateMyProfile,
-    getProfileById,
+    getProfileByUsername,
     updateAnyProfile,
 };

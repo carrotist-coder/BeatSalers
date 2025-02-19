@@ -9,8 +9,8 @@ router.get('/me', authMiddleware(null), profilesController.getMyProfile);
 // Обновить свой профиль (любой авторизованный пользователь)
 router.put('/me', authMiddleware(null), profilesController.updateMyProfile);
 
-// Получить профиль другого пользователя по ID
-router.get('/:id', authMiddleware(null, false), profilesController.getProfileById);
+// Получить профиль другого пользователя по username
+router.get('/:username', authMiddleware(null, false), profilesController.getProfileByUsername);
 
 // Обновить любой профиль (только админ)
 router.put('/:id', authMiddleware('admin'), profilesController.updateAnyProfile);
