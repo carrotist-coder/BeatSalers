@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
+const {addUser} = require("./usersController");
 
 // Метод для аутентификации пользователя (получение токена)
 const login = async (req, res, next) => {
@@ -73,28 +74,51 @@ const register = async (req, res, next) => {
         return next(ApiError.badRequest('Неверная роль пользователя. Доступные роли: "user" или "admin".'));
     }
 
-    // Хеширование пароля
-    const hashedPassword = await bcrypt.hash(password, 5);
+    try {
+        // Хешируем пароль
+        const hashedPassword = await bcrypt.hash(password, 5);
+        const createdAt = new Date().toISOString();
 
-    const createdAt = new Date().toISOString();
-    db.run(
-        'INSERT INTO users (username, password, email, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
-        [username, hashedPassword, email, role, createdAt, createdAt],
-        function (err) {
-            if (err) {
-                if (err.message.includes('UNIQUE constraint failed')) {
-                    return next(ApiError.internal('Имя пользователя или email уже занято.'));
+        // Создание пользователя в таблице users
+        db.run(
+            'INSERT INTO users (username, password, email, role, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+            [username, hashedPassword, email, role, createdAt, createdAt],
+            function (err) {
+                if (err) {
+                    if (err.message.includes('UNIQUE constraint failed')) {
+                        return next(ApiError.internal('Имя пользователя или email уже занято.'));
+                    }
+                    return next(ApiError.internal('Ошибка при добавлении пользователя.'));
                 }
-                return next(ApiError.internal('Ошибка при добавлении пользователя'));
+
+                const userId = this.lastID;
+
+                // Создание профиля в таблице user_profiles
+                db.run(
+                    'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+                    [userId, username, null, null, createdAt, createdAt],
+                    function (profileErr) {
+                        if (profileErr) {
+                            // Если произошла ошибка при создании профиля, удаляем пользователя
+                            db.run('DELETE FROM users WHERE id = ?', [userId], () => {
+                                return next(ApiError.internal('Ошибка при создании профиля пользователя.'));
+                            });
+                            return;
+                        }
+
+                        // Генерация JWT-токена после успешной регистрации
+                        const token = jwt.sign({ id: userId, role }, process.env.SECRET_KEY, { expiresIn: '1h' });
+
+                        // Возвращаем токен клиенту
+                        res.status(201).json({ message: 'Пользователь успешно создан', token });
+                    }
+                );
             }
-
-            // Генерация JWT-токена после успешной регистрации
-            const token = jwt.sign({ id: this.lastID, role }, process.env.SECRET_KEY, { expiresIn: '1h' });
-
-            // Возвращаем токен клиенту
-            res.status(201).json({ message: 'Пользователь успешно создан', token });
-        }
-    );
+        );
+    } catch (error) {
+        console.error('Ошибка при регистрации:', error.message);
+        return next(ApiError.internal('Ошибка при регистрации пользователя.'));
+    }
 };
 
 module.exports = {

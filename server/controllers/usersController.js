@@ -56,17 +56,9 @@ const addUser = async (req, res, next) => {
 
             const userId = this.lastID;
             // Создание профиля в таблице user_profiles
-            console.log('Creating profile with:', {
-                userId,
-                name: 'Unnamed',
-                bio: null,
-                social_media_link: null,
-                createdAt,
-                updatedAt: createdAt,
-            });
             db.run(
                 'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
-                [userId, 'Unnamed', null, null, createdAt, createdAt],
+                [userId, username, null, null, createdAt, createdAt],
                 function (profileErr) {
                     if (profileErr) {
                         // Если произошла ошибка при создании профиля, удаляем пользователя
