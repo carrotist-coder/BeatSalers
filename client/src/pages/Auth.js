@@ -36,6 +36,8 @@ const Auth = observer(() => {
             setErrorMessage(''); // Очищаем сообщение об ошибке
             setIsLoginMode(true); // После успешной регистрации переходим в режим логина
             alert('Регистрация успешно завершена! Теперь вы можете войти.');
+            setLoginName('');
+            setPasswordName('');
         } catch (e) {
             setErrorMessage(e.response?.data?.message || 'Произошла ошибка при регистрации');
         }

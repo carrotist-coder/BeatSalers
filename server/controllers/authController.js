@@ -2,7 +2,12 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
-const {addUser} = require("./usersController");
+
+// Функция для проверки валидности email
+const validateEmail = (email) => {
+    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return re.test(email);
+};
 
 // Метод для аутентификации пользователя (получение токена)
 const login = async (req, res, next) => {
@@ -72,6 +77,11 @@ const register = async (req, res, next) => {
 
     if (!['user', 'admin'].includes(role)) {
         return next(ApiError.badRequest('Неверная роль пользователя. Доступные роли: "user" или "admin".'));
+    }
+
+    // Проверяем валидность email
+    if (!validateEmail(email)) {
+        return next(ApiError.badRequest('Некорректный формат email.'));
     }
 
     try {
