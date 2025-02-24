@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Auth from "./pages/Auth";
+import Main from "./pages/Main";
 import {Spinner} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {check} from "./http/UserAPI";
@@ -36,7 +36,7 @@ const App = observer(() => {
     }
 
     return (
-        <Auth />
+        <Main />
     );
 });
 
