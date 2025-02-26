@@ -4,6 +4,7 @@ import {Spinner} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {check} from "./http/UserAPI";
 import {Context} from "./index";
+import NavBar from "./components/NavBar";
 
 const App = observer(() => {
     const {user} = useContext(Context);
@@ -36,7 +37,10 @@ const App = observer(() => {
     }
 
     return (
-        <Main />
+        <div>
+            <NavBar />
+            <Main />
+        </div>
     );
 });
 
