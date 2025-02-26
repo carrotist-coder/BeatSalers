@@ -1,17 +1,30 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
 .main-container {
     position: relative;
     height: 100vh;
-    overflow: hidden;
     background: url('../../public/media/background.jpg') no-repeat center center fixed;
     background-size: cover;
-    filter: brightness(100%)
+    filter: brightness(100%);
 }
 
 .content {
-    position: relative;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 1;
     color: #e67505;
     text-align: center;
-    top: 10%;
-    transform: translateY(-50%);
+    display: flex;
 }

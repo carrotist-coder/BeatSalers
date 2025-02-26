@@ -4,6 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import { Button, Container, Nav } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { NavLink, useNavigate } from "react-router-dom";
+import './NavBar.css';
 import {
     MAIN_ROUTE,
     AUTH_ROUTE,
@@ -23,7 +24,7 @@ const NavBar = observer(() => {
     }
 
     return (
-        <Navbar bg="dark" variant="dark">
+        <Navbar bg="dark" variant="dark" className="navbar-fixed">
             <Container>
                 <NavLink style={{ color: 'white', textDecoration: 'none' }} to={MAIN_ROUTE}>БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ</NavLink>
                 <Nav className="ml-auto align-items-center" style={{ color: 'white' }}>
