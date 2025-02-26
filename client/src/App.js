@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useState} from 'react';
-import Main from "./pages/Main";
+import AppRouter from './components/AppRouter';
 import {Spinner} from "react-bootstrap";
 import {observer} from "mobx-react-lite";
 import {check} from "./http/UserAPI";
@@ -39,7 +39,7 @@ const App = observer(() => {
     return (
         <div>
             <NavBar />
-            <Main />
+            <AppRouter />
         </div>
     );
 });
