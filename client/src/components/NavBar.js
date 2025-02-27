@@ -29,11 +29,12 @@ const NavBar = observer(() => {
                 <NavLink style={{ color: 'white', textDecoration: 'none' }} to={MAIN_ROUTE}>БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ</NavLink>
                 <Nav className="ml-auto align-items-center" style={{ color: 'white' }}>
                     <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={BEATS_ROUTE}>Аранжировки</NavLink>
-                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={USERS_ROUTE}>Пользователи</NavLink>
-                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={MY_PROFILE_ROUTE}>Профиль</NavLink>
-
+                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={USERS_ROUTE}>Музыканты</NavLink>
                     {user.isAuth ? (
-                        <Button variant={"outline-light"} onClick={logOut}>Выйти</Button>
+                        <>
+                            <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={MY_PROFILE_ROUTE}>Профиль</NavLink>
+                            <Button variant={"outline-light"} onClick={logOut}>Выйти</Button>
+                        </>
                     ) : (
                         <Button variant={"outline-light"} onClick={() => navigate(AUTH_ROUTE)}>Авторизация</Button>
                     )}
