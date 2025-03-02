@@ -57,87 +57,83 @@ const Auth = observer(() => {
     };
 
     return (
-        <div className="main-container">
-            <div className="content">
-                <Container
-                    className="d-flex justify-content-center align-items-center"
-                    style={{height: window.innerHeight - 54}}
-                >
-                    <Card style={{
-                        width: 600,
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)', // Прозрачность 70%
-                        boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' // Добавляем тень для лучшего визуального эффекта
-                    }} className="p-5">
-                        <h2 className="m-auto">{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
-                        <Form className="d-flex flex-column">
-                            {/* Поле для логина или имени пользователя */}
-                            <Form.Control
-                                className="mt-3"
-                                placeholder={isLoginMode ? "Введите логин" : "Введите имя пользователя"}
-                                value={loginName}
-                                onChange={(e) => setLoginName(e.target.value)}
-                                required
-                            />
-                            {/* Поле для пароля */}
-                            <Form.Control
-                                type="password"
-                                className="mt-3"
-                                placeholder="Введите пароль"
-                                value={passwordName}
-                                onChange={(e) => setPasswordName(e.target.value)}
-                                required
-                            />
-                            {/* Поле для email (только в режиме регистрации) */}
-                            {!isLoginMode && (
-                                <Form.Control
-                                    type="email"
-                                    className="mt-3"
-                                    placeholder="Введите email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    required
-                                />
-                            )}
-                            {/* Отображение ошибки */}
-                            {errorMessage && (
-                                <div className="mt-3" style={{ color: 'red', textAlign: 'center' }}>
-                                    {errorMessage}
-                                </div>
-                            )}
-                            {/* Кнопки */}
-                            <Row className="d-flex justify-content-between align-items-center">
-                                <Button
-                                    className="mt-3 flex-grow-1 w-auto mx-2"
-                                    variant={"outline-danger"}
-                                    onClick={goBack}
-                                >
-                                    Назад
-                                </Button>
-                                <Button
-                                    className="mt-3 flex-grow-1 w-auto mx-2"
-                                    variant={"outline-success"}
-                                    onClick={isLoginMode ? signIn : signUp} // Вызываем соответствующий метод
-                                >
-                                    {isLoginMode ? 'Войти' : 'Зарегистрироваться'}
-                                </Button>
-                            </Row>
-                            {/* Переключение между логином и регистрацией */}
-                            <Row className="mt-3 d-flex justify-content-center">
-                                <Button
-                                    variant="link"
-                                    onClick={toggleMode}
-                                    style={{ padding: 0 }}
-                                >
-                                    {isLoginMode
-                                        ? 'Нет аккаунта? Зарегистрироваться'
-                                        : 'Уже есть аккаунт? Войти'}
-                                </Button>
-                            </Row>
-                        </Form>
-                    </Card>
-                </Container>
-            </div>
-        </div>
+        <Container
+            className="d-flex justify-content-center align-items-center"
+            style={{height: window.innerHeight - 54}}
+        >
+            <Card style={{
+                width: 600,
+                backgroundColor: 'rgba(255, 255, 255, 0.9)', // Прозрачность 70%
+                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)' // Добавляем тень для лучшего визуального эффекта
+            }} className="p-5">
+                <h2 className="m-auto">{isLoginMode ? 'Авторизация' : 'Регистрация'}</h2>
+                <Form className="d-flex flex-column">
+                    {/* Поле для логина или имени пользователя */}
+                    <Form.Control
+                        className="mt-3"
+                        placeholder={isLoginMode ? "Введите логин" : "Введите имя пользователя"}
+                        value={loginName}
+                        onChange={(e) => setLoginName(e.target.value)}
+                        required
+                    />
+                    {/* Поле для пароля */}
+                    <Form.Control
+                        type="password"
+                        className="mt-3"
+                        placeholder="Введите пароль"
+                        value={passwordName}
+                        onChange={(e) => setPasswordName(e.target.value)}
+                        required
+                    />
+                    {/* Поле для email (только в режиме регистрации) */}
+                    {!isLoginMode && (
+                        <Form.Control
+                            type="email"
+                            className="mt-3"
+                            placeholder="Введите email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
+                        />
+                    )}
+                    {/* Отображение ошибки */}
+                    {errorMessage && (
+                        <div className="mt-3" style={{ color: 'red', textAlign: 'center' }}>
+                            {errorMessage}
+                        </div>
+                    )}
+                    {/* Кнопки */}
+                    <Row className="d-flex justify-content-between align-items-center">
+                        <Button
+                            className="mt-3 flex-grow-1 w-auto mx-2"
+                            variant={"outline-danger"}
+                            onClick={goBack}
+                        >
+                            Назад
+                        </Button>
+                        <Button
+                            className="mt-3 flex-grow-1 w-auto mx-2"
+                            variant={"outline-success"}
+                            onClick={isLoginMode ? signIn : signUp} // Вызываем соответствующий метод
+                        >
+                            {isLoginMode ? 'Войти' : 'Зарегистрироваться'}
+                        </Button>
+                    </Row>
+                    {/* Переключение между логином и регистрацией */}
+                    <Row className="mt-3 d-flex justify-content-center">
+                        <Button
+                            variant="link"
+                            onClick={toggleMode}
+                            style={{ padding: 0 }}
+                        >
+                            {isLoginMode
+                                ? 'Нет аккаунта? Зарегистрироваться'
+                                : 'Уже есть аккаунт? Войти'}
+                        </Button>
+                    </Row>
+                </Form>
+            </Card>
+        </Container>
     );
 });
 
