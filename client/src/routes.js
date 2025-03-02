@@ -1,6 +1,6 @@
 import Main from './pages/Main';
 import Auth from './pages/Auth';
-import UserItem from "./components/UserItem";
+import UserList from "./components/UserList";
 
 import {
     MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE
@@ -18,7 +18,7 @@ export const publicRoutes = [
     },
     {
         path: USERS_ROUTE,
-        Component: UserItem // Страница авторизации/регистрации
+        Component: UserList // Страница авторизации/регистрации
     },
 ];
 

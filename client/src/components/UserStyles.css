@@ -1,0 +1,14 @@
+.user-list {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    padding: 16px;
+    margin-top: calc(16px + 16px);
+    box-sizing: border-box;
+}
+
+.user-item {
+    flex-basis: calc(20% - 16px);
+}
