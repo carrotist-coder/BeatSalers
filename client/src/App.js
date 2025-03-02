@@ -39,10 +39,8 @@ const App = observer(() => {
     return (
         <div>
             <NavBar />
-            <div className="main-container">
-                <div className="content">
-                    <AppRouter />
-                </div>
+            <div className="content">
+                <AppRouter />
             </div>
         </div>
     );

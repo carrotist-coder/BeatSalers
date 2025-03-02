@@ -8,13 +8,8 @@ html, body {
     height: 100%;
     width: 100%;
     overflow-x: hidden;
-}
-
-.main-container {
-    height: 100vh;
     background: url('../../public/media/background.jpg') no-repeat center center fixed;
     background-size: cover;
-    filter: brightness(100%);
 }
 
 .content {
