@@ -34,12 +34,29 @@
     height: 100%;
 }
 
+.audio-page__image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
 .audio-page__beat-image {
     max-height: 80vh;
     width: auto;
     max-width: 100%;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.audio-page__price-tag {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    font-size: 2rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 8px 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .audio-page__info-section {
@@ -75,27 +92,22 @@
     margin-bottom: 20px;
 }
 
-.audio-page__buy-section {
+.audio-page__button-section {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    gap: 15px;
+    justify-content: space-between;
 }
 
-.audio-page__price-tag {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: #28a745;
-    white-space: nowrap;
-}
-
-.audio-page__buy-button {
+.audio-page__back-button, .audio-page__buy-button {
     font-size: 1.5rem;
     padding: 12px 30px;
-    flex-grow: 1;
     border-radius: 8px;
     transition: transform 0.3s;
+    flex: 1;
+    width: 100%;
 }
 
+.audio-page__back-button:hover,
 .audio-page__buy-button:hover {
     transform: scale(1.02);
 }

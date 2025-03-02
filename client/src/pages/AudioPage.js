@@ -1,19 +1,30 @@
 import React from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "./AudioPage.css";
+import { BEATS_ROUTE } from "../utils/consts";
 
 function AudioPage() {
+    const navigate = useNavigate();
+
+    const handleBackClick = () => {
+        navigate(BEATS_ROUTE);
+    };
+
     return (
         <div className="audio-page">
             <div className="audio-page__blurred-background"></div>
             <Container className="audio-page__content-container">
                 <Row className="h-100 align-items-center">
                     <Col md={6} className="audio-page__image-section">
-                        <img
-                            src="https://dummyimage.com/500x500"
-                            alt="Аранжировка"
-                            className="audio-page__beat-image"
-                        />
+                        <div className="audio-page__image-wrapper">
+                            <img
+                                src="https://dummyimage.com/500x500"
+                                alt="Аранжировка"
+                                className="audio-page__beat-image"
+                            />
+                            <span className="audio-page__price-tag">100 BYN</span>
+                        </div>
                     </Col>
                     <Col md={6} className="audio-page__info-section">
                         <Card.Body className="d-flex flex-column h-100 justify-content-center">
@@ -33,8 +44,14 @@ function AudioPage() {
                                 />
                                 Ваш браузер не поддерживает элемент audio.
                             </audio>
-                            <div className="audio-page__buy-section">
-                                <span className="audio-page__price-tag">100 BYN</span>
+                            <div className="audio-page__button-section">
+                                <Button
+                                    className="audio-page__back-button"
+                                    variant="danger"
+                                    onClick={handleBackClick}
+                                >
+                                    Назад
+                                </Button>
                                 <Button
                                     className="audio-page__buy-button"
                                     variant="success"
