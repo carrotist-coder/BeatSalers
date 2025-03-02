@@ -12,3 +12,23 @@
 .user-item {
     flex-basis: calc(20% - 16px);
 }
+
+.audio-item {
+    flex-basis: calc(25% - 16px);
+}
+
+.price-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.additional-info {
+    font-size: 0.9rem;
+    color: #555;
+}
