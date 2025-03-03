@@ -9,6 +9,11 @@
     box-sizing: border-box;
 }
 
+.list__title {
+    flex-basis: 100%;
+    text-align: center;
+}
+
 .user-item {
     flex-basis: calc(20% - 16px);
 }

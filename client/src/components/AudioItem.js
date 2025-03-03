@@ -1,11 +1,18 @@
 import React from "react";
-import { CardGroup, Card } from "react-bootstrap"; // Добавляем Button
+import { CardGroup, Card } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
+import {BEAT_DETAILS_ROUTE} from "../utils/consts";
 
 function AudioItem() {
+    const navigate = useNavigate();
+    const handleCardClick = () => {
+        navigate(BEAT_DETAILS_ROUTE);
+    };
+
     return (
-        <CardGroup className="audio-item">
-            <Card>
+        <CardGroup className="audio-item" onClick={handleCardClick}>
+            <Card style={{ cursor: "pointer" }}>
                 <Card.Img variant="top" src="https://dummyimage.com/300x300" />
                 <Card.Body>
                     <Card.Title>Название аранжировки</Card.Title>
@@ -14,7 +21,11 @@ function AudioItem() {
                         <strong>Стиль: </strong>Хип-хоп<br />
                         <strong>BPM: </strong>128
                     </Card.Text>
-                    <audio controls style={{ width: "100%" }}>
+                    <audio
+                        controls
+                        style={{ width: "100%" }}
+                        onClick={(e) => e.stopPropagation()}
+                    >
                         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg" />
                         Ваш браузер не поддерживает элемент audio.
                     </audio>
