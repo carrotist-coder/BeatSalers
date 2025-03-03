@@ -5,6 +5,7 @@ import AudioList from "./components/AudioList";
 import AudioPage from "./pages/AudioPage";
 import UserPage from "./pages/UserPage";
 import MyProfilePage from "./pages/MyProfilePage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 import {
     MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE, MY_PROFILE_ROUTE
@@ -44,4 +45,8 @@ export const publicRoutes = [
         path: PROFILE_ROUTE,
         Component: UserPage // Страница с конкретным пользователем
     },
+    {
+        path: "*",
+        Component: NotFoundPage // Страница ошибки
+    }
 ];
