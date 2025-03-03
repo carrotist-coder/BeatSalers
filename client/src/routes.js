@@ -3,9 +3,10 @@ import Auth from './pages/Auth';
 import UserList from "./components/UserList";
 import AudioList from "./components/AudioList";
 import AudioPage from "./pages/AudioPage";
+import UserPage from "./pages/UserPage";
 
 import {
-    MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE
+    MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE
 } from "./utils/consts";
 
 // Публичные маршруты (доступны всем)
@@ -29,6 +30,10 @@ export const publicRoutes = [
     {
         path: BEAT_DETAILS_ROUTE,
         Component: AudioPage // Страница с конкретной аранжировкой
+    },
+    {
+        path: PROFILE_ROUTE,
+        Component: UserPage // Страница с конкретным пользователем
     },
 ];
 
