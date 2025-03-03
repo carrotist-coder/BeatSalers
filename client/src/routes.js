@@ -4,10 +4,19 @@ import UserList from "./components/UserList";
 import AudioList from "./components/AudioList";
 import AudioPage from "./pages/AudioPage";
 import UserPage from "./pages/UserPage";
+import MyProfilePage from "./pages/MyProfilePage";
 
 import {
-    MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE
+    MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE, MY_PROFILE_ROUTE
 } from "./utils/consts";
+
+// Защищенные маршруты (требуется авторизация)
+export const authRoutes = [
+    {
+        path: MY_PROFILE_ROUTE,
+        Component: MyProfilePage // Страница моего профиля
+    },
+];
 
 // Публичные маршруты (доступны всем)
 export const publicRoutes = [
@@ -36,6 +45,3 @@ export const publicRoutes = [
         Component: UserPage // Страница с конкретным пользователем
     },
 ];
-
-// Защищенные маршруты (требуется авторизация)
-export const authRoutes = [];
