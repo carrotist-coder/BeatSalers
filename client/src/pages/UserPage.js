@@ -1,12 +1,31 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
-import { BEATS_ROUTE } from "../utils/consts";
+import { getFullUserByUsername } from '../api';
 import AudioList from "../components/AudioList";
+import { BEATS_ROUTE } from "../utils/consts";
 
 function UserPage() {
     const navigate = useNavigate();
+    const { username } = useParams();
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const data = await getFullUserByUsername(username);
+                setUser(data);
+            } catch (error) {
+                console.error('Ошибка при получении данных пользователя:', error);
+            }
+        };
+        fetchUserData();
+    }, [username]);
+
+    if (!user) {
+        return <div>Загрузка...</div>;
+    }
 
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
@@ -22,7 +41,7 @@ function UserPage() {
                             <Col md={6} className="user-page__image-section">
                                 <div className="user-page__image-wrapper">
                                     <img
-                                        src="https://dummyimage.com/500x500"
+                                        src={user.profile.photo_url || 'https://dummyimage.com/500x500'}
                                         alt="Аранжировка"
                                         className="user-page__beat-image"
                                     />
@@ -30,10 +49,10 @@ function UserPage() {
                             </Col>
                             <Col md={6} className="user-page__info-section">
                                 <Card.Body className="d-flex flex-column h-100 justify-content-center">
-                                    <Card.Title className="user-page__title">Имя музыканта</Card.Title>
-                                    <Card.Text className="user-page__author">@Имя пользователя</Card.Text>
+                                    <Card.Title className="user-page__title">{user.profile.name}</Card.Title>
+                                    <Card.Text className="user-page__author">@{user.user.username}</Card.Text>
                                     <Card.Text className="user-page__description">
-                                        Это описание или биография музыканта, которая описана здесь.
+                                        <strong>Описание: </ strong><br/> {user.profile.bio || '(здесь пока ничего нет...)'}
                                     </Card.Text>
                                     <div className="user-page__button-section">
                                         <Button
@@ -46,7 +65,7 @@ function UserPage() {
                                         <Button
                                             className="user-page__buy-button"
                                             variant="primary"
-                                            href="#"
+                                            href={user.profile.social_media_link || '#'}
                                             target="_blank"
                                         >
                                             Связаться
@@ -58,7 +77,7 @@ function UserPage() {
                     </Container>
                 </div>
                 <div className="audio-list-container">
-                    <AudioList/>
+                    <AudioList beats={user.beats} />
                 </div>
             </div>
         </div>

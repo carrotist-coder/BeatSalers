@@ -1,0 +1,31 @@
+import axios from 'axios';
+
+const baseURL = process.env.REACT_APP_API_URL;
+
+const getHeaders = () => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        return { headers: { Authorization: `Bearer ${token}` } };
+    }
+    return {};
+};
+
+export const getUsers = async () => {
+    try {
+        const response = await axios.get(baseURL + '/users', getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при получении пользователей:', error);
+        throw error;
+    }
+};
+
+export const getFullUserByUsername = async (username) => {
+    try {
+        const response = await axios.get(baseURL + `/users/${username}`, getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при получении данных пользователя:', error);
+        throw error;
+    }
+};

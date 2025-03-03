@@ -4,7 +4,13 @@ const bcrypt = require("bcrypt");
 
 // Получить всех пользователей
 const getUsers = (req, res, next) => {
-    db.all('SELECT id, username, email, role, created_at FROM users', [], (err, rows) => {
+    db.all(`SELECT users.id, users.username, users.email, users.role, users.created_at, 
+            profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url, 
+            COUNT(beats.id) as beat_count
+            FROM users
+            JOIN profiles ON users.id = profiles.user_id
+            LEFT JOIN beats ON users.id = beats.seller_id
+            GROUP BY users.id`, [], (err, rows) => {
         if (err) {
             return next(ApiError.internal('Ошибка при получении списка пользователей'));
         }
@@ -205,26 +211,35 @@ const deleteUser = (req, res, next) => {
     });
 };
 
-const getUserByUsername = (req, res, next) => {
+const getFullUserByUsername = (req, res, next) => {
     const username = req.params.username;
-
-    if (!username) {
-        return next(ApiError.badRequest('Имя пользователя обязательно.'));
-    }
-
-    db.get(
-        'SELECT id, username, email, role, created_at FROM users WHERE username = ?',
-        [username],
-        (err, row) => {
-            if (err) {
-                return next(ApiError.internal('Ошибка при поиске пользователя'));
-            }
-            if (!row) {
-                return next(ApiError.notFound('Пользователь не найден'));
-            }
-            res.status(200).json(row);
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            return next(ApiError.internal('Ошибка при получении пользователя'));
         }
-    );
+        if (!user) {
+            return next(ApiError.notFound('Пользователь не найден'));
+        }
+        db.get('SELECT * FROM profiles WHERE user_id = ?', [user.id], (profileErr, profile) => {
+            if (profileErr) {
+                return next(ApiError.internal('Ошибка при получении профиля'));
+            }
+            if (!profile) {
+                return next(ApiError.notFound('Профиль не найден'));
+            }
+            db.all('SELECT * FROM beats WHERE seller_id = ?', [user.id], (beatsErr, beats) => {
+                if (beatsErr) {
+                    return next(ApiError.internal('Ошибка при получении битов'));
+                }
+                const fullUser = {
+                    user: user,
+                    profile: profile,
+                    beats: beats
+                };
+                res.status(200).json(fullUser);
+            });
+        });
+    });
 };
 
 module.exports = {
@@ -233,5 +248,5 @@ module.exports = {
     addUser,
     updateUser,
     deleteUser,
-    getUserByUsername,
+    getFullUserByUsername,
 };

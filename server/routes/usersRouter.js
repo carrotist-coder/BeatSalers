@@ -21,6 +21,6 @@ router.put('/:id', authMiddleware(null), usersController.updateUser);
 router.delete('/:id', authMiddleware('admin'), usersController.deleteUser);
 
 // Получить пользователя по username
-router.get('/:username', authMiddleware(null, false), usersController.getUserByUsername);
+router.get('/:username', authMiddleware(null, false), usersController.getFullUserByUsername);
 
 module.exports = router;
