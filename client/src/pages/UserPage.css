@@ -7,6 +7,23 @@
     overflow: hidden;
 }
 
+.scrollable-content {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+
+}
+
+.main-content {
+    position: relative;
+    height: 100vh;
+}
+
+.audio-list-container {
+    padding: 20px;
+    background-color: #fff;
+}
+
 .user-page__blurred-background {
     position: absolute;
     top: -10px;
@@ -21,7 +38,7 @@
 }
 
 .user-page__content-container {
-    height: 100vh;
+    height: 100%;
     position: relative;
     z-index: 1;
     padding: 20px;
