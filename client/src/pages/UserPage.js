@@ -1,15 +1,26 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
 import { BEATS_ROUTE } from "../utils/consts";
 import AudioList from "../components/AudioList";
+import { Context } from "../index";
 
 function UserPage() {
     const navigate = useNavigate();
+    const { username } = useParams();
+    const { user } = useContext(Context);
+
+    // Если URL '/profiles/me' или username совпадает с текущим пользователем – это мой профиль
+    const isOwnProfile = username === "me" || username === user.username;
 
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
+    };
+
+    const handleEditClick = () => {
+        // Логика для открытия/редактирования профиля
+        // (будет дописываться)
     };
 
     return (
@@ -43,14 +54,24 @@ function UserPage() {
                                         >
                                             Назад
                                         </Button>
-                                        <Button
-                                            className="user-page__buy-button"
-                                            variant="primary"
-                                            href="#"
-                                            target="_blank"
-                                        >
-                                            Связаться
-                                        </Button>
+                                        {isOwnProfile ? (
+                                            <Button
+                                                className="user-page__edit-button"
+                                                variant="warning"
+                                                onClick={handleEditClick}
+                                            >
+                                                Изменить
+                                            </Button>
+                                        ) : (
+                                            <Button
+                                                className="user-page__buy-button"
+                                                variant="primary"
+                                                href="#"
+                                                target="_blank"
+                                            >
+                                                Связаться
+                                            </Button>
+                                        )}
                                     </div>
                                 </Card.Body>
                             </Col>
@@ -58,7 +79,7 @@ function UserPage() {
                     </Container>
                 </div>
                 <div className="audio-list-container">
-                    <AudioList/>
+                    <AudioList />
                 </div>
             </div>
         </div>
