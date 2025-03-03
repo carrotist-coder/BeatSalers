@@ -55,9 +55,9 @@ const addUser = async (req, res, next) => {
             }
 
             const userId = this.lastID;
-            // Создание профиля в таблице user_profiles
+            // Создание профиля в таблице profiles
             db.run(
-                'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+                'INSERT INTO profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
                 [userId, username, null, null, createdAt, createdAt],
                 function (profileErr) {
                     if (profileErr) {
@@ -168,7 +168,7 @@ const deleteUser = (req, res, next) => {
             }
 
             // Удаление профиля пользователя из таблицы user_profiles
-            db.run('DELETE FROM user_profiles WHERE user_id = ?', [userId], function (profileErr) {
+            db.run('DELETE FROM profiles WHERE user_id = ?', [userId], function (profileErr) {
                 if (profileErr) {
                     db.run('ROLLBACK', () => {
                         return next(ApiError.internal('Ошибка при удалении профиля пользователя'));

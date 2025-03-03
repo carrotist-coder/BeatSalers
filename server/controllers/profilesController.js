@@ -5,7 +5,7 @@ const ApiError = require('../error/ApiError');
 const getMyProfile = (req, res, next) => {
     const userId = req.user.id;
 
-    db.get('SELECT * FROM user_profiles WHERE user_id = ?', [userId], (err, row) => {
+    db.get('SELECT * FROM profiles WHERE user_id = ?', [userId], (err, row) => {
         if (err) {
             return next(ApiError.internal('Ошибка при получении профиля'));
         }
@@ -24,7 +24,7 @@ const updateMyProfile = (req, res, next) => {
     const updatedAt = new Date().toISOString();
 
     db.run(
-        'UPDATE user_profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), updated_at = ? WHERE user_id = ?',
+        'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), updated_at = ? WHERE user_id = ?',
         [name, bio, social_media_link, updatedAt, userId],
         function (err) {
             if (err) {
@@ -58,7 +58,7 @@ const getProfileByUsername = (req, res, next) => {
         const userId = userRow.id;
 
         // Затем находим профиль по user_id
-        db.get('SELECT * FROM user_profiles WHERE user_id = ?', [userId], (profileErr, profileRow) => {
+        db.get('SELECT * FROM profiles WHERE user_id = ?', [userId], (profileErr, profileRow) => {
             if (profileErr) {
                 return next(ApiError.internal('Ошибка при получении профиля'));
             }
@@ -82,7 +82,7 @@ const updateAnyProfile = (req, res, next) => {
     const updatedAt = new Date().toISOString();
 
     db.run(
-        'UPDATE user_profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), updated_at = ? WHERE user_id = ?',
+        'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), updated_at = ? WHERE user_id = ?',
         [name, bio, social_media_link, updatedAt, profileId],
         function (err) {
             if (err) {
