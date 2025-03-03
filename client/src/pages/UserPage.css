@@ -92,7 +92,7 @@
     justify-content: space-between;
 }
 
-.user-page__back-button, .user-page__buy-button {
+.user-page__back-button, .user-page__buy-button, .user-page__edit-button {
     font-size: 1.5rem;
     padding: 12px 30px;
     border-radius: 8px;
@@ -102,6 +102,7 @@
 }
 
 .user-page__back-button:hover,
-.user-page__buy-button:hover {
+.user-page__buy-button:hover,
+.user-page__edit-button:hover {
     transform: scale(1.02);
 }
