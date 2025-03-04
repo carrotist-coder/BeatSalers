@@ -19,9 +19,11 @@ const AudioList = () => {
     return (
         <div className="user-list">
             <h3 className="list__title">Аранжировки:</h3>
-            {beats.map(beat => (
-                <AudioItem key={beat.id} beat={beat} />
-            ))}
+            {beats.length === 0 ? (
+                <p className="list__title" style={{ color: 'red' }}><strong>Ничего не найдено</strong></p>
+            ) : (
+                beats.map(beat => <AudioItem key={beat.id} beat={beat} />)
+            )}
         </div>
     );
 };

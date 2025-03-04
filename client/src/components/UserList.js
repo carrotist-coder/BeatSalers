@@ -19,9 +19,11 @@ const UserList = () => {
     return (
         <div className="user-list">
             <h3 className="list__title">Музыканты:</h3>
-            {users.map(user => (
-                <UserItem key={user.id} user={user} />
-            ))}
+            {users.length === 0 ? (
+                <p className="list__title" style={{color: 'red'}}>Ничего не найдено</p>
+            ) : (
+                users.map(user => <UserItem key={user.id} user={user}/>)
+            )}
         </div>
     );
 };
