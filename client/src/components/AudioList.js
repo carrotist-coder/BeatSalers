@@ -2,19 +2,21 @@ import React, { useState, useEffect } from 'react';
 import AudioItem from './AudioItem';
 import { getAllBeats } from '../api';
 
-const AudioList = () => {
-    const [beats, setBeats] = useState([]);
+const AudioList = ({ beats: providedBeats }) => {
+    const [beats, setBeats] = useState(providedBeats || []);
     useEffect(() => {
-        const fetchBeats = async () => {
-            try {
-                const data = await getAllBeats();
-                setBeats(data);
-            } catch (error) {
-                console.error('Ошибка при получении списка аранжировок:', error);
-            }
-        };
-        fetchBeats();
-    }, []);
+        if (!providedBeats) {
+            const fetchBeats = async () => {
+                try {
+                    const data = await getAllBeats();
+                    setBeats(data);
+                } catch (error) {
+                    console.error('Ошибка при получении списка аранжировок:', error);
+                }
+            };
+            fetchBeats();
+        }
+    }, [providedBeats]);
 
     return (
         <div className="user-list">

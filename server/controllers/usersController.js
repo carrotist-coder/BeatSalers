@@ -227,17 +227,24 @@ const getFullUserByUsername = (req, res, next) => {
             if (!profile) {
                 return next(ApiError.notFound('Профиль не найден'));
             }
-            db.all('SELECT * FROM beats WHERE seller_id = ?', [user.id], (beatsErr, beats) => {
-                if (beatsErr) {
-                    return next(ApiError.internal('Ошибка при получении битов'));
+            db.all(
+                `SELECT beats.*, users.username as seller_username 
+                 FROM beats 
+                 JOIN users ON beats.seller_id = users.id 
+                 WHERE beats.seller_id = ?`,
+                [user.id],
+                (beatsErr, beats) => {
+                    if (beatsErr) {
+                        return next(ApiError.internal('Ошибка при получении битов'));
+                    }
+                    const fullUser = {
+                        user: user,
+                        profile: profile,
+                        beats: beats
+                    };
+                    res.status(200).json(fullUser);
                 }
-                const fullUser = {
-                    user: user,
-                    profile: profile,
-                    beats: beats
-                };
-                res.status(200).json(fullUser);
-            });
+            );
         });
     });
 };
