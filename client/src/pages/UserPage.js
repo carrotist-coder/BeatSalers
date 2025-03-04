@@ -5,26 +5,44 @@ import "./UserPage.css";
 import { getFullUserByUsername } from '../api';
 import AudioList from "../components/AudioList";
 import { BEATS_ROUTE } from "../utils/consts";
+import NotFoundPage from "./NotFoundPage";
 
 function UserPage() {
     const navigate = useNavigate();
     const { username } = useParams();
     const [user, setUser] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    const [isUserNotFound, setUserNotFound] = useState(false);
 
     useEffect(() => {
         const fetchUserData = async () => {
+            setLoading(true);
             try {
                 const data = await getFullUserByUsername(username);
                 setUser(data);
             } catch (error) {
-                console.error('Ошибка при получении данных пользователя:', error);
+                if (error.response && error.response.status === 404) {
+                    setUserNotFound(true);
+                } else {
+                    console.error('Ошибка при получении данных пользователя:', error);
+                }
+            } finally {
+                setLoading(false);
             }
         };
         fetchUserData();
     }, [username]);
 
-    if (!user) {
+    if (isLoading) {
         return <div>Загрузка...</div>;
+    }
+
+    if (isUserNotFound) {
+        return <NotFoundPage />;
+    }
+
+    if (!user) {
+        return <div>Произошла ошибка</div>;
     }
 
     const handleBackClick = () => {
@@ -52,7 +70,7 @@ function UserPage() {
                                     <Card.Title className="user-page__title">{user.profile.name}</Card.Title>
                                     <Card.Text className="user-page__author">@{user.user.username}</Card.Text>
                                     <Card.Text className="user-page__description">
-                                        <strong>Описание: </ strong><br/> {user.profile.bio || '(здесь пока ничего нет...)'}
+                                        <strong>Описание: </strong><br/> {user.profile.bio || '(здесь пока ничего нет...)'}
                                     </Card.Text>
                                     <div className="user-page__button-section">
                                         <Button
