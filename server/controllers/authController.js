@@ -103,9 +103,9 @@ const register = async (req, res, next) => {
 
                 const userId = this.lastID;
 
-                // Создание профиля в таблице user_profiles
+                // Создание профиля в таблице profiles
                 db.run(
-                    'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+                    'INSERT INTO profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
                     [userId, username, null, null, createdAt, createdAt],
                     function (profileErr) {
                         if (profileErr) {
