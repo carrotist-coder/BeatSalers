@@ -29,3 +29,23 @@ export const getFullUserByUsername = async (username) => {
         throw error;
     }
 };
+
+export const getAllBeats = async () => {
+    try {
+        const response = await axios.get(baseURL + '/beats', getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при получении списка аранжировок:', error);
+        throw error;
+    }
+};
+
+export const getBeatById = async (id) => {
+    try {
+        const response = await axios.get(baseURL + `/beats/${id}`, getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при получении данных аранжировки:', error);
+        throw error;
+    }
+};

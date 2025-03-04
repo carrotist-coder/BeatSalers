@@ -3,9 +3,11 @@ const ApiError = require('../error/ApiError');
 
 // Получить все биты (доступно всем)
 const getAllBeats = (req, res, next) => {
-    db.all('SELECT * FROM beats', [], (err, rows) => {
+    db.all(`SELECT beats.*, users.username as seller_username
+            FROM beats
+            JOIN users ON beats.seller_id = users.id`, [], (err, rows) => {
         if (err) {
-            return next(ApiError.internal('Ошибка при получении списка битов'));
+            return next(ApiError.internal('Ошибка при получении списка аранжировок'));
         }
         res.status(200).json(rows);
     });
@@ -14,17 +16,18 @@ const getAllBeats = (req, res, next) => {
 // Получить бит по ID (доступно всем)
 const getBeatById = (req, res, next) => {
     const beatId = parseInt(req.params.id, 10);
-
     if (!beatId) {
-        return next(ApiError.badRequest('ID бита обязателен'));
+        return next(ApiError.badRequest('ID аранжировки обязателен'));
     }
-
-    db.get('SELECT * FROM beats WHERE id = ?', [beatId], (err, row) => {
+    db.get(`SELECT beats.*, users.username as seller_username
+            FROM beats
+            JOIN users ON beats.seller_id = users.id
+            WHERE beats.id = ?`, [beatId], (err, row) => {
         if (err) {
-            return next(ApiError.internal('Ошибка при получении бита'));
+            return next(ApiError.internal('Ошибка при получении аранжировки'));
         }
         if (!row) {
-            return next(ApiError.notFound('Бит не найден'));
+            return next(ApiError.notFound('Аранжировка не найдена'));
         }
         res.status(200).json(row);
     });
