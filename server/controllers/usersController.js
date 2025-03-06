@@ -4,12 +4,12 @@ const bcrypt = require("bcrypt");
 
 // Получить всех пользователей
 const getUsers = (req, res, next) => {
-    db.all(`SELECT users.id, users.username, users.email, users.role, users.created_at, 
-            profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url, 
-            COUNT(beats.id) as beat_count
+    db.all(`SELECT users.id, users.username, users.email, users.role, users.created_at,
+                   profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url,
+                   COUNT(beats.id) as beat_count
             FROM users
-            JOIN profiles ON users.id = profiles.user_id
-            LEFT JOIN beats ON users.id = beats.seller_id
+                     JOIN profiles ON users.id = profiles.user_id
+                     LEFT JOIN beats ON users.id = beats.seller_id
             GROUP BY users.id`, [], (err, rows) => {
         if (err) {
             return next(ApiError.internal('Ошибка при получении списка пользователей'));
@@ -19,17 +19,93 @@ const getUsers = (req, res, next) => {
 };
 
 // Получить информацию о текущем пользователе
-const getMyProfile = (req, res, next) => {
+const getMyProfile = async (req, res, next) => {
     const userId = req.user.id;
+    db.get(
+        `SELECT users.id, users.username, users.email, users.role, users.created_at,
+                profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url
+         FROM users
+                  JOIN profiles ON users.id = profiles.user_id
+         WHERE users.id = ?`,
+        [userId],
+        (err, row) => {
+            if (err) {
+                return next(ApiError.internal('Ошибка при получении профиля пользователя'));
+            }
+            if (!row) {
+                return next(ApiError.notFound('Профиль не найден'));
+            }
 
-    db.get('SELECT id, username, email, role, created_at FROM users WHERE id = ?', [userId], (err, row) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка при получении профиля пользователя'));
+            db.all(
+                `SELECT beats.*, users.username as seller_username
+                 FROM beats
+                          JOIN users ON beats.seller_id = users.id
+                 WHERE beats.seller_id = ?`,
+                [userId],
+                (beatsErr, beats) => {
+                    if (beatsErr) {
+                        return next(ApiError.internal('Ошибка при получении битов'));
+                    }
+
+                    const fullUser = {
+                        user: {
+                            id: row.id,
+                            username: row.username,
+                            email: row.email,
+                            role: row.role,
+                            created_at: row.created_at,
+                        },
+                        profile: {
+                            name: row.name,
+                            bio: row.bio,
+                            social_media_link: row.social_media_link,
+                            photo_url: row.photo_url,
+                        },
+                        beats: beats || [],
+                    };
+                    res.status(200).json(fullUser);
+                }
+            );
         }
-        if (!row) {
+    );
+};
+
+// Получить информацию о пользователе
+const getFullUserByUsername = (req, res, next) => {
+    const username = req.params.username;
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            return next(ApiError.internal('Ошибка при получении пользователя'));
+        }
+        if (!user) {
             return next(ApiError.notFound('Пользователь не найден'));
         }
-        res.status(200).json(row);
+        db.get('SELECT * FROM profiles WHERE user_id = ?', [user.id], (profileErr, profile) => {
+            if (profileErr) {
+                return next(ApiError.internal('Ошибка при получении профиля'));
+            }
+            if (!profile) {
+                return next(ApiError.notFound('Профиль не найден'));
+            }
+            db.all(
+                `SELECT beats.*, users.username as seller_username 
+                 FROM beats 
+                 JOIN users ON beats.seller_id = users.id 
+                 WHERE beats.seller_id = ?`,
+                [user.id],
+                (beatsErr, beats) => {
+                    if (beatsErr) {
+                        return next(ApiError.internal('Ошибка при получении битов'));
+                    }
+                    const fullUser = {
+                        user: user,
+                        profile: profile,
+                        beats: beats
+                    };
+                    res.status(200).json(fullUser);
+                }
+            );
+        });
     });
 };
 
@@ -207,44 +283,6 @@ const deleteUser = (req, res, next) => {
                     });
                 });
             });
-        });
-    });
-};
-
-const getFullUserByUsername = (req, res, next) => {
-    const username = req.params.username;
-    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка при получении пользователя'));
-        }
-        if (!user) {
-            return next(ApiError.notFound('Пользователь не найден'));
-        }
-        db.get('SELECT * FROM profiles WHERE user_id = ?', [user.id], (profileErr, profile) => {
-            if (profileErr) {
-                return next(ApiError.internal('Ошибка при получении профиля'));
-            }
-            if (!profile) {
-                return next(ApiError.notFound('Профиль не найден'));
-            }
-            db.all(
-                `SELECT beats.*, users.username as seller_username 
-                 FROM beats 
-                 JOIN users ON beats.seller_id = users.id 
-                 WHERE beats.seller_id = ?`,
-                [user.id],
-                (beatsErr, beats) => {
-                    if (beatsErr) {
-                        return next(ApiError.internal('Ошибка при получении битов'));
-                    }
-                    const fullUser = {
-                        user: user,
-                        profile: profile,
-                        beats: beats
-                    };
-                    res.status(200).json(fullUser);
-                }
-            );
         });
     });
 };

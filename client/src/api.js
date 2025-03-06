@@ -49,3 +49,13 @@ export const getBeatById = async (id) => {
         throw error;
     }
 };
+
+export const getMyProfile = async () => {
+    try {
+        const response = await axios.get(baseURL + '/users/me', getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при получении данных моего профиля:', error);
+        throw error;
+    }
+};
