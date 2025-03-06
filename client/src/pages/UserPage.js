@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
-import { getFullUserByUsername } from '../api';
+import {baseURL, getFullUserByUsername} from '../api';
 import AudioList from "../components/AudioList";
 import { BEATS_ROUTE } from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
@@ -45,6 +45,8 @@ function UserPage() {
         return <div>Произошла ошибка</div>;
     }
 
+    const photoUrl = user.profile.photo_url ? baseURL + user.profile.photo_url : 'https://dummyimage.com/500x500';
+
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
     };
@@ -59,7 +61,7 @@ function UserPage() {
                             <Col md={6} className="user-page__image-section">
                                 <div className="user-page__image-wrapper">
                                     <img
-                                        src={user.profile.photo_url || 'https://dummyimage.com/500x500'}
+                                        src={photoUrl}
                                         alt="Аранжировка"
                                         className="user-page__beat-image"
                                     />

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.REACT_APP_API_URL;
+export const baseURL = process.env.REACT_APP_API_URL;
 
 const getHeaders = () => {
     const token = localStorage.getItem('token');

@@ -2,6 +2,7 @@ import React from "react";
 import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
+import {baseURL} from "../api";
 
 function AudioItem({ beat }) {
     const navigate = useNavigate();
@@ -9,10 +10,12 @@ function AudioItem({ beat }) {
         navigate('/beats/' + beat.id);
     };
 
+    const photoUrl = beat.photo_url ? baseURL + beat.photo_url : 'https://dummyimage.com/300x300';
+
     return (
         <CardGroup className="audio-item" onClick={handleCardClick}>
             <Card style={{ cursor: "pointer" }}>
-                <Card.Img variant="top" src={beat.photo_url || 'https://dummyimage.com/300x300'} />
+                <Card.Img variant="top" src={photoUrl} />
                 <Card.Body>
                     <Card.Title>{beat.title}</Card.Title>
                     <Card.Text>@{beat.seller_username}</Card.Text>

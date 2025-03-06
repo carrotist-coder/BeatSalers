@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./AudioPage.css";
-import { getBeatById } from '../api';
+import {baseURL, getBeatById} from '../api';
 import { BEATS_ROUTE } from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
 
@@ -44,6 +44,8 @@ function AudioPage() {
         return <div>Произошла ошибка</div>;
     }
 
+    const photoUrl = beat.photo_url ? baseURL + beat.photo_url : 'https://dummyimage.com/500x500';
+
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
     };
@@ -56,7 +58,7 @@ function AudioPage() {
                     <Col md={6} className="audio-page__image-section">
                         <div className="audio-page__image-wrapper">
                             <img
-                                src={beat.photo_url || 'https://dummyimage.com/500x500'}
+                                src={photoUrl}
                                 alt="Аранжировка"
                                 className="audio-page__beat-image"
                             />
