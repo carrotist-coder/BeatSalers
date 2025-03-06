@@ -1,18 +1,51 @@
-import React, { useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./UserPage.css";
 import { BEATS_ROUTE } from "../utils/consts";
 import AudioList from "../components/AudioList";
-import { Context } from "../index";
+import NotFoundPage from "./NotFoundPage";
+import { baseURL, getMyProfile } from "../api";
 
 function MyProfilePage() {
     const navigate = useNavigate();
-    const { username } = useParams();
-    const { user } = useContext(Context);
+    const [user, setUser] = useState(null);
+    const [isLoading, setLoading] = useState(true);
+    const [isUserNotFound, setUserNotFound] = useState(false);
 
-    // Если URL '/profiles/me' или username совпадает с текущим пользователем – это мой профиль
-    const isOwnProfile = username === "me" || username === user.username;
+    useEffect(() => {
+        const fetchUserData = async () => {
+            setLoading(true);
+            try {
+                const data = await getMyProfile();
+                console.log('Received data:', data);
+                setUser(data);
+            } catch (error) {
+                if (error.response && error.response.status === 404) {
+                    setUserNotFound(true);
+                } else {
+                    console.error('Ошибка при получении данных пользователя:', error);
+                }
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUserData();
+    }, []);
+
+    if (isLoading) {
+        return <div>Загрузка...</div>;
+    }
+
+    if (isUserNotFound) {
+        return <NotFoundPage />;
+    }
+
+    if (!user) {
+        return <div>Произошла ошибка</div>;
+    }
+
+    const photoUrl = user.profile.photo_url ? baseURL + user.profile.photo_url : 'https://dummyimage.com/500x500';
 
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
@@ -33,18 +66,18 @@ function MyProfilePage() {
                             <Col md={6} className="user-page__image-section">
                                 <div className="user-page__image-wrapper">
                                     <img
-                                        src="https://dummyimage.com/500x500"
-                                        alt="Аранжировка"
+                                        src={photoUrl}
+                                        alt="Профиль"
                                         className="user-page__beat-image"
                                     />
                                 </div>
                             </Col>
                             <Col md={6} className="user-page__info-section">
                                 <Card.Body className="d-flex flex-column h-100 justify-content-center">
-                                    <Card.Title className="user-page__title">Имя музыканта</Card.Title>
-                                    <Card.Text className="user-page__author">@Имя пользователя</Card.Text>
+                                    <Card.Title className="user-page__title">{user.profile.name}</Card.Title>
+                                    <Card.Text className="user-page__author">@{user.user.username}</Card.Text>
                                     <Card.Text className="user-page__description">
-                                        Это описание или биография музыканта, которая описана здесь.
+                                        <strong>Описание: </strong><br/> {user.profile.bio || '(здесь пока ничего нет...)'}
                                     </Card.Text>
                                     <div className="user-page__button-section">
                                         <Button
@@ -54,24 +87,21 @@ function MyProfilePage() {
                                         >
                                             Назад
                                         </Button>
-                                        {isOwnProfile ? (
-                                            <Button
-                                                className="user-page__edit-button"
-                                                variant="warning"
-                                                onClick={handleEditClick}
-                                            >
-                                                Изменить
-                                            </Button>
-                                        ) : (
-                                            <Button
-                                                className="user-page__buy-button"
-                                                variant="primary"
-                                                href="#"
-                                                target="_blank"
-                                            >
-                                                Связаться
-                                            </Button>
-                                        )}
+                                        <Button
+                                            className="user-page__buy-button"
+                                            variant="primary"
+                                            href={user.profile.social_media_link || ''}
+                                            target="_blank"
+                                        >
+                                            Связаться
+                                        </Button>
+                                        <Button
+                                            className="user-page__edit-button"
+                                            variant="warning"
+                                            onClick={handleEditClick}
+                                        >
+                                            Редактировать
+                                        </Button>
                                     </div>
                                 </Card.Body>
                             </Col>
@@ -79,7 +109,7 @@ function MyProfilePage() {
                     </Container>
                 </div>
                 <div className="audio-list-container">
-                    <AudioList />
+                    <AudioList beats={user.beats} />
                 </div>
             </div>
         </div>
