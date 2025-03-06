@@ -3,3 +3,4 @@
 /server/.env
 *.db
 *.sqlite
+/server/uploads/

@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const initializeDatabase = require('./db');
 const cors = require('cors');
+const fileUpload = require('express-fileupload');
 
 const app = express();
 const routes = require('./routes/index');
@@ -11,6 +12,8 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+app.use(fileUpload({}));
+app.use('/uploads', express.static('uploads'));
 app.use('/', routes);
 
 // Middleware для обработки ошибок
