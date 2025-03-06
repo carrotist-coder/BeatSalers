@@ -45,6 +45,7 @@ function AudioPage() {
     }
 
     const photoUrl = beat.photo_url ? baseURL + beat.photo_url : 'https://dummyimage.com/500x500';
+    const audioUrl = baseURL + beat.audio_url;
 
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
@@ -77,7 +78,7 @@ function AudioPage() {
                                 <strong>BPM: </strong>{beat.bpm}
                             </Card.Text>
                             <audio controls className="audio-page__player">
-                                <source src={beat.audio_url} type="audio/mpeg" />
+                                <source src={audioUrl} type="audio/mpeg" />
                                 Ваш браузер не поддерживает элемент audio.
                             </audio>
                             <div className="audio-page__button-section">

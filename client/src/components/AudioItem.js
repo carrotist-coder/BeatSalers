@@ -11,7 +11,8 @@ function AudioItem({ beat }) {
     };
 
     const photoUrl = beat.photo_url ? baseURL + beat.photo_url : 'https://dummyimage.com/300x300';
-
+    const audioUrl = baseURL + beat.audio_url;
+    
     return (
         <CardGroup className="audio-item" onClick={handleCardClick}>
             <Card style={{ cursor: "pointer" }}>
@@ -28,7 +29,7 @@ function AudioItem({ beat }) {
                         style={{ width: "100%" }}
                         onClick={(e) => e.stopPropagation()}
                     >
-                        <source src={beat.audio_url} type="audio/mpeg" />
+                        <source src={audioUrl} type="audio/mpeg" />
                         Ваш браузер не поддерживает элемент audio.
                     </audio>
                 </Card.Body>
