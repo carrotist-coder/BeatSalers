@@ -4,7 +4,6 @@ import UserList from "./components/UserList";
 import AudioList from "./components/AudioList";
 import AudioPage from "./pages/AudioPage";
 import UserPage from "./pages/UserPage";
-import MyProfilePage from "./pages/MyProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 
 import {
@@ -15,7 +14,7 @@ import {
 export const authRoutes = [
     {
         path: MY_PROFILE_ROUTE,
-        Component: MyProfilePage // Страница моего профиля
+        Component: UserPage // Страница с конкретным пользователем (мой профиль)
     },
 ];
 

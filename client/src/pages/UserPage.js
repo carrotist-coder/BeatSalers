@@ -1,27 +1,35 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
-import {baseURL, getFullUserByUsername} from '../api';
+import { baseURL, getFullUserByUsername, getMyProfile } from '../api';
 import AudioList from "../components/AudioList";
-import { BEATS_ROUTE } from "../utils/consts";
+import { MAIN_ROUTE } from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
+import { Context } from "../index";
 
 function UserPage() {
     const navigate = useNavigate();
     const { username } = useParams();
+    const { user: userStore } = useContext(Context);
     const [user, setUser] = useState(null);
     const [isLoading, setLoading] = useState(true);
     const [isUserNotFound, setUserNotFound] = useState(false);
+    const isMyProfile = !username; // Для маршрута /me параметр username будет undefined
 
     useEffect(() => {
         const fetchUserData = async () => {
             setLoading(true);
             try {
-                const data = await getFullUserByUsername(username);
+                let data;
+                if (isMyProfile) {
+                    data = await getMyProfile();
+                } else {
+                    data = await getFullUserByUsername(username);
+                }
                 setUser(data);
             } catch (error) {
-                if (error.response && error.response.status === 404) {
+                if (error.response?.status === 404) {
                     setUserNotFound(true);
                 } else {
                     console.error('Ошибка при получении данных пользователя:', error);
@@ -31,7 +39,9 @@ function UserPage() {
             }
         };
         fetchUserData();
-    }, [username]);
+    }, [username, isMyProfile]);
+
+    const isCurrentUser = userStore.isAuth && userStore.user.id === user?.user?.id;
 
     if (isLoading) {
         return <div>Загрузка...</div>;
@@ -47,8 +57,9 @@ function UserPage() {
 
     const photoUrl = user.profile.photo_url ? baseURL + user.profile.photo_url : 'https://dummyimage.com/500x500';
 
-    const handleBackClick = () => {
-        navigate(BEATS_ROUTE);
+    const handleEditClick = () => {
+        // Логика для редактирования профиля
+        // (будет дописываться)
     };
 
     return (
@@ -62,7 +73,7 @@ function UserPage() {
                                 <div className="user-page__image-wrapper">
                                     <img
                                         src={photoUrl}
-                                        alt="Аранжировка"
+                                        alt="Профиль"
                                         className="user-page__beat-image"
                                     />
                                 </div>
@@ -78,18 +89,27 @@ function UserPage() {
                                         <Button
                                             className="user-page__back-button"
                                             variant="danger"
-                                            onClick={handleBackClick}
+                                            onClick={() => navigate(MAIN_ROUTE)}
                                         >
                                             Назад
                                         </Button>
                                         <Button
                                             className="user-page__buy-button"
                                             variant="primary"
-                                            href={user.profile.social_media_link || '#'}
+                                            href={user.profile.social_media_link}
                                             target="_blank"
                                         >
                                             Связаться
                                         </Button>
+                                        {isCurrentUser && (
+                                            <Button
+                                                className="user-page__buy-button"
+                                                variant="warning"
+                                                onClick={handleEditClick}
+                                            >
+                                                Редактировать
+                                            </Button>
+                                        )}
                                     </div>
                                 </Card.Body>
                             </Col>
