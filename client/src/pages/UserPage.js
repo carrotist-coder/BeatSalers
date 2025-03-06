@@ -87,23 +87,24 @@ function UserPage() {
                                     </Card.Text>
                                     <div className="user-page__button-section">
                                         <Button
-                                            className="user-page__back-button"
+                                            className="user-page__button"
                                             variant="danger"
                                             onClick={() => navigate(MAIN_ROUTE)}
                                         >
                                             Назад
                                         </Button>
                                         <Button
-                                            className="user-page__buy-button"
-                                            variant="primary"
+                                            className="user-page__button"
+                                            variant={user.profile.social_media_link ? "primary" : "secondary"}
                                             href={user.profile.social_media_link}
                                             target="_blank"
+                                            disabled={!user.profile.social_media_link}
                                         >
-                                            Связаться
+                                            Соцсети
                                         </Button>
                                         {isCurrentUser && (
                                             <Button
-                                                className="user-page__buy-button"
+                                                className="user-page__button"
                                                 variant="warning"
                                                 onClick={handleEditClick}
                                             >
