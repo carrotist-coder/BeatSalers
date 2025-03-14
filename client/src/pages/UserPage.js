@@ -7,7 +7,7 @@ import AudioList from "../components/AudioList";
 import {MAIN_ROUTE, LONG_TEXT_MAX_LENGTH} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
 import { Context } from "../index";
-import {truncateText} from "../utils/helpers";
+import {formatDate, truncateText} from "../utils/helpers";
 
 function UserPage() {
     const navigate = useNavigate();
@@ -86,8 +86,8 @@ function UserPage() {
                                     <Card.Text className="user-page__description">
                                         <strong>Описание: </strong><br/> {truncateText(user.profile.bio, LONG_TEXT_MAX_LENGTH)}
                                     </Card.Text>
-                                    <div><strong>Создан: </strong>{user.user.created_at}</div>
-                                    <div className="user-page__additional-text"><strong>Изменён: </strong>{user.user.updated_at}</div>
+                                    <div><strong>Создан: </strong>{formatDate(user.user.created_at)}</div>
+                                    <div className="user-page__additional-text"><strong>Изменён: </strong>{formatDate(user.user.updated_at)}</div>
                                     <div className="user-page__button-section">
                                         <Button
                                             className="user-page__button"

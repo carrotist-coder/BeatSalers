@@ -5,7 +5,7 @@ import "./AudioPage.css";
 import {baseURL, getBeatById} from '../api';
 import {BEATS_ROUTE, LONG_TEXT_MAX_LENGTH} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
-import {truncateText} from "../utils/helpers";
+import {formatDate, truncateText} from "../utils/helpers";
 
 function AudioPage() {
     const navigate = useNavigate();
@@ -77,8 +77,8 @@ function AudioPage() {
                             <Card.Text className="audio-page__additional-info">
                                 <div className="audio-page__additional-text"><strong>Стиль: </strong>{beat.style}</div>
                                 <div className="audio-page__additional-text"><strong>BPM: </strong>{beat.bpm}</div>
-                                <div className="audio-page__additional-text"><strong>Создан: </strong>{beat.created_at}</div>
-                                <div className="audio-page__additional-text"><strong>Изменён: </strong>{beat.updated_at}</div>
+                                <div className="audio-page__additional-text"><strong>Создан: </strong>{formatDate(beat.created_at)}</div>
+                                <div className="audio-page__additional-text"><strong>Изменён: </strong>{formatDate(beat.updated_at)}</div>
                             </Card.Text>
                             <audio controls className="audio-page__player">
                                 <source src={audioUrl} type="audio/mpeg" />

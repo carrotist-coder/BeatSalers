@@ -6,3 +6,12 @@ export const truncateText = (text, maxLength) => {
     }
     return text;
 };
+
+// Функция для форматирования даты в формат ДД.ММ.ГГГГ
+export const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}.${month}.${year}`;
+}
