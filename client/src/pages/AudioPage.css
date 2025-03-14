@@ -82,10 +82,22 @@
 }
 
 .audio-page__additional-info {
+    display: flex;
+    align-content: flex-start;
+    gap: 0 1.2rem;
+    flex-flow: column wrap;
+    height: 9%;
     font-size: 1rem;
     margin-bottom: 15px;
     color: #444;
 }
+
+.audio-page__additional-text {
+    display: flex;
+    gap: 0.3rem;
+    flex-basis: 50%;
+}
+
 
 .audio-page__player {
     width: 100%;

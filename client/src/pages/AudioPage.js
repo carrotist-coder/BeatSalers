@@ -75,8 +75,10 @@ function AudioPage() {
                                 {truncateText(beat.description, LONG_TEXT_MAX_LENGTH)}
                             </Card.Text>
                             <Card.Text className="audio-page__additional-info">
-                                <strong>Стиль: </strong>{beat.style}<br />
-                                <strong>BPM: </strong>{beat.bpm}
+                                <div className="audio-page__additional-text"><strong>Стиль: </strong>{beat.style}</div>
+                                <div className="audio-page__additional-text"><strong>BPM: </strong>{beat.bpm}</div>
+                                <div className="audio-page__additional-text"><strong>Создан: </strong>{beat.created_at}</div>
+                                <div className="audio-page__additional-text"><strong>Изменён: </strong>{beat.updated_at}</div>
                             </Card.Text>
                             <audio controls className="audio-page__player">
                                 <source src={audioUrl} type="audio/mpeg" />

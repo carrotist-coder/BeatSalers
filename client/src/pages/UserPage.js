@@ -86,6 +86,8 @@ function UserPage() {
                                     <Card.Text className="user-page__description">
                                         <strong>Описание: </strong><br/> {truncateText(user.profile.bio, LONG_TEXT_MAX_LENGTH)}
                                     </Card.Text>
+                                    <div><strong>Создан: </strong>{user.user.created_at}</div>
+                                    <div className="user-page__additional-text"><strong>Изменён: </strong>{user.user.updated_at}</div>
                                     <div className="user-page__button-section">
                                         <Button
                                             className="user-page__button"
@@ -119,7 +121,7 @@ function UserPage() {
                     </Container>
                 </div>
                 <div className="audio-list-container">
-                    <AudioList beats={user.beats} />
+                    <AudioList beats={user.beats}/>
                 </div>
             </div>
         </div>
