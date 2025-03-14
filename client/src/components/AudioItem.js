@@ -3,6 +3,7 @@ import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
 import {baseURL} from "../api";
+import {formatDate} from "../utils/helpers";
 
 function AudioItem({ beat }) {
     const navigate = useNavigate();
@@ -21,8 +22,9 @@ function AudioItem({ beat }) {
                     <Card.Title>{beat.title}</Card.Title>
                     <Card.Text>@{beat.seller_username}</Card.Text>
                     <Card.Text className="additional-info">
-                        <strong>Стиль: </strong>{beat.style}<br />
-                        <strong>BPM: </strong>{beat.bpm}
+                        <div><strong>Стиль: </strong>{beat.style}</div>
+                        <div><strong>BPM: </strong>{beat.bpm}</div>
+                        <div><strong>Создан: </strong>{formatDate(beat.created_at)}</div>
                     </Card.Text>
                     <audio
                         controls
