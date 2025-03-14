@@ -3,8 +3,9 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./AudioPage.css";
 import {baseURL, getBeatById} from '../api';
-import { BEATS_ROUTE } from "../utils/consts";
+import {BEATS_ROUTE, LONG_TEXT_MAX_LENGTH} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
+import {truncateText} from "../utils/helpers";
 
 function AudioPage() {
     const navigate = useNavigate();
@@ -71,7 +72,7 @@ function AudioPage() {
                             <Card.Title className="audio-page__title">{beat.title}</Card.Title>
                             <Card.Text className="audio-page__author">@{beat.seller_username}</Card.Text>
                             <Card.Text className="audio-page__description">
-                                {beat.description || 'Описание отсутствует.'}
+                                {truncateText(beat.description, LONG_TEXT_MAX_LENGTH)}
                             </Card.Text>
                             <Card.Text className="audio-page__additional-info">
                                 <strong>Стиль: </strong>{beat.style}<br />

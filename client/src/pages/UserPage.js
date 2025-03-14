@@ -4,9 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
 import { baseURL, getFullUserByUsername, getMyProfile } from '../api';
 import AudioList from "../components/AudioList";
-import { MAIN_ROUTE } from "../utils/consts";
+import {MAIN_ROUTE, LONG_TEXT_MAX_LENGTH} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
 import { Context } from "../index";
+import {truncateText} from "../utils/helpers";
 
 function UserPage() {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ function UserPage() {
                                     <Card.Title className="user-page__title">{user.profile.name}</Card.Title>
                                     <Card.Text className="user-page__author">@{user.user.username}</Card.Text>
                                     <Card.Text className="user-page__description">
-                                        <strong>Описание: </strong><br/> {user.profile.bio || '(здесь пока ничего нет...)'}
+                                        <strong>Описание: </strong><br/> {truncateText(user.profile.bio, LONG_TEXT_MAX_LENGTH)}
                                     </Card.Text>
                                     <div className="user-page__button-section">
                                         <Button

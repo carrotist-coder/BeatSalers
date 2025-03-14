@@ -3,6 +3,8 @@ import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from '../api';
 import "./UserStyles.css";
+import {truncateText} from "../utils/helpers";
+import {SHORT_TEXT_MAX_LENGTH} from "../utils/consts";
 
 function UserItem({ user }) {
     const navigate = useNavigate();
@@ -18,7 +20,7 @@ function UserItem({ user }) {
                 <Card.Img variant="top" src={photoUrl} />
                 <Card.Body>
                     <Card.Title>{user.name}</Card.Title>
-                    <Card.Text>{user.bio || '(нет описания)'}</Card.Text>
+                    <Card.Text>{truncateText(user.bio, SHORT_TEXT_MAX_LENGTH)}</Card.Text>
                 </Card.Body>
                 <Card.Footer>
                     <small className="text-muted">Аранжировок: {user.beat_count}</small>
