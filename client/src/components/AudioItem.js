@@ -20,7 +20,14 @@ function AudioItem({ beat }) {
                 <Card.Img variant="top" src={photoUrl} />
                 <Card.Body>
                     <Card.Title>{beat.title}</Card.Title>
-                    <Card.Text>@{beat.seller_username}</Card.Text>
+                    <Card.Text>
+                        <span className="audio-item__username"
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  navigate(`/profiles/${beat.seller_username}`);
+                              }}
+                        >@{beat.seller_username}</span>
+                    </Card.Text>
                     <Card.Text className="additional-info">
                         <div><strong>Стиль: </strong>{beat.style}</div>
                         <div><strong>BPM: </strong>{beat.bpm}</div>

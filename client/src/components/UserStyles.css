@@ -37,3 +37,8 @@
     font-size: 0.9rem;
     color: #555;
 }
+
+.audio-item__username:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 255, 0.9);
+}

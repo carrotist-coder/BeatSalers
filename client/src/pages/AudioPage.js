@@ -71,7 +71,11 @@ function AudioPage() {
                     <Col md={6} className="audio-page__info-section">
                         <Card.Body className="d-flex flex-column h-100 justify-content-center">
                             <Card.Title className="audio-page__title">{beat.title}</Card.Title>
-                            <Card.Text className="audio-page__author">@{beat.seller_username}</Card.Text>
+                            <Card.Text>
+                                <span className="audio-page__author"
+                                      onClick={() => navigate(`/profiles/${beat.seller_username}`)}
+                                >@{beat.seller_username}</span>
+                            </Card.Text>
                             <Card.Text className="audio-page__description">
                                 {truncateText(beat.description, LONG_TEXT_MAX_LENGTH)}
                             </Card.Text>
