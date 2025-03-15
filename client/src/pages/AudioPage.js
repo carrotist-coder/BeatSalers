@@ -47,6 +47,7 @@ function AudioPage() {
 
     const photoUrl = beat.photo_url ? baseURL + beat.photo_url : 'https://dummyimage.com/500x500';
     const audioUrl = baseURL + beat.audio_url;
+    const emailHref = `mailto:${beat.email}?subject=Покупка%20аранжировки%20"${beat.title}"&body=Я%20хотел%20бы%20купить%20эту%20аранжировку:%20"${beat.title}".`;
 
     const handleBackClick = () => {
         navigate(BEATS_ROUTE);
@@ -95,7 +96,7 @@ function AudioPage() {
                                 <Button
                                     className="audio-page__buy-button"
                                     variant="success"
-                                    href="mailto:email@example.com?subject=Покупка%20аранжировки&body=Я%20хотел%20бы%20купить%20эту%20аранжировку."
+                                    href={emailHref}
                                     target="_blank"
                                 >
                                     Купить

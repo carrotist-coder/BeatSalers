@@ -19,7 +19,7 @@ const getBeatById = (req, res, next) => {
     if (!beatId) {
         return next(ApiError.badRequest('ID аранжировки обязателен'));
     }
-    db.get(`SELECT beats.*, users.username as seller_username
+    db.get(`SELECT beats.*, users.username as seller_username, users.email as email
             FROM beats
             JOIN users ON beats.seller_id = users.id
             WHERE beats.id = ?`, [beatId], (err, row) => {
