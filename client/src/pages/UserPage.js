@@ -8,6 +8,7 @@ import {MAIN_ROUTE, LONG_TEXT_MAX_LENGTH} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
 import { Context } from "../index";
 import {formatDate, truncateText} from "../utils/helpers";
+import {getAverageColor, getTextColor} from "../utils/colorHelpers";
 
 function UserPage() {
     const navigate = useNavigate();
@@ -17,6 +18,8 @@ function UserPage() {
     const [isLoading, setLoading] = useState(true);
     const [isUserNotFound, setUserNotFound] = useState(false);
     const isMyProfile = !username; // Для маршрута /me параметр username будет undefined
+    const [bgColor, setBgColor] = useState('#ffffff');
+    const [textColor, setTextColor] = useState('#000');
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -44,6 +47,14 @@ function UserPage() {
 
     const isCurrentUser = userStore.isAuth && userStore.user.id === user?.user?.id;
 
+    const handleImageLoad = (e) => {
+        const img = e.target;
+        const { r, g, b } = getAverageColor(img);
+        const computedBgColor = `rgb(${r}, ${g}, ${b})`;
+        setBgColor(computedBgColor);
+        setTextColor(getTextColor(r, g, b));
+    };
+
     if (isLoading) {
         return <div>Загрузка...</div>;
     }
@@ -67,19 +78,21 @@ function UserPage() {
         <div className="user-page">
             <div className="scrollable-content">
                 <div className="main-content">
-                    <div className="user-page__blurred-background"></div>
+                    <div className="user-page__blurred-background" style={{backgroundColor: bgColor}}></div>
                     <Container className="user-page__content-container">
                         <Row className="h-100 align-items-center">
                             <Col md={6} className="user-page__image-section">
                                 <div className="user-page__image-wrapper">
                                     <img
+                                        crossOrigin="anonymous"
                                         src={photoUrl}
                                         alt="Профиль"
                                         className="user-page__beat-image"
+                                        onLoad={handleImageLoad}
                                     />
                                 </div>
                             </Col>
-                            <Col md={6} className="user-page__info-section">
+                            <Col md={6} className="user-page__info-section" style={{ color: textColor }}>
                                 <Card.Body className="d-flex flex-column h-100 justify-content-center">
                                     <Card.Title className="user-page__title">{user.profile.name}</Card.Title>
                                     <Card.Text className="user-page__author">@{user.user.username}</Card.Text>

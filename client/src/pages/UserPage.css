@@ -33,7 +33,6 @@
     background-size: cover;
     background-position: center;
     filter: blur(10px);
-    background-image: url('https://dummyimage.com/1920x1080');
     z-index: 0;
 }
 
