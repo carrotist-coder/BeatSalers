@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
 import {baseURL} from "../api";
 import {formatDate} from "../utils/helpers";
+import { getAverageColor, getTextColor } from "../utils/colorHelpers";
 
 function AudioItem({ beat }) {
     const navigate = useNavigate();
+    const [bgColor, setBgColor] = useState('#ffffff');
+    const [textColor, setTextColor] = useState('#000');
+
+    const handleImageLoad = (e) => {
+        const img = e.target;
+        const { r, g, b } = getAverageColor(img);
+        const computedBgColor = `rgb(${r}, ${g}, ${b})`;
+        setBgColor(computedBgColor);
+        setTextColor(getTextColor(r, g, b));
+    };
+
     const handleCardClick = () => {
         navigate('/beats/' + beat.id);
     };
@@ -16,8 +28,13 @@ function AudioItem({ beat }) {
     
     return (
         <CardGroup className="audio-item" onClick={handleCardClick}>
-            <Card style={{ cursor: "pointer" }}>
-                <Card.Img variant="top" src={photoUrl} />
+            <Card style={{ cursor: "pointer", backgroundColor: bgColor, color: textColor }}>
+                <Card.Img
+                    variant="top"
+                    src={photoUrl}
+                    onLoad={handleImageLoad}
+                    crossOrigin="anonymous"
+                />
                 <Card.Body>
                     <Card.Title>{beat.title}</Card.Title>
                     <Card.Text>
