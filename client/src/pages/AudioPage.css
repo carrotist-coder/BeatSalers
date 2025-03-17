@@ -83,6 +83,21 @@
     font-size: 1rem;
     line-height: 1.4;
     margin-bottom: 15px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.audio-page__description::-webkit-scrollbar {
+    width: 8px;
+}
+
+.audio-page__description::-webkit-scrollbar-track {
+    background: inherit;
+}
+
+.audio-page__description::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
 }
 
 .audio-page__additional-info {

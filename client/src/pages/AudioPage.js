@@ -3,7 +3,7 @@ import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./AudioPage.css";
 import {baseURL, getBeatById} from '../api';
-import {BEATS_ROUTE, LONG_TEXT_MAX_LENGTH} from "../utils/consts";
+import {BEATS_ROUTE} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
 import {formatDate, truncateText} from "../utils/helpers";
 import {getAverageColor, getTextColor} from '../utils/colorHelpers';
@@ -92,9 +92,7 @@ function AudioPage() {
                                       onClick={() => navigate(`/profiles/${beat.seller_username}`)}
                                 >@{beat.seller_username}</span>
                             </Card.Text>
-                            <Card.Text className="audio-page__description">
-                                {truncateText(beat.description, LONG_TEXT_MAX_LENGTH)}
-                            </Card.Text>
+                            <Card.Text className="audio-page__description">{truncateText(beat.description, 0)}</Card.Text>
                             <Card.Text className="audio-page__additional-info">
                                 <div className="audio-page__additional-text"><strong>Стиль: </strong>{beat.style}</div>
                                 <div className="audio-page__additional-text"><strong>BPM: </strong>{beat.bpm}</div>
