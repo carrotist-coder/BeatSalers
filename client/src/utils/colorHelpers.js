@@ -11,9 +11,14 @@ export const getAverageColor = (img) => {
     let r = 0, g = 0, b = 0, count = 0;
     const step = 10;
     for (let i = 0; i < data.length; i += 4 * step) {
-        r += data[i];
-        g += data[i + 1];
-        b += data[i + 2];
+        const alpha = data[i + 3];
+        // Если пиксель полностью прозрачный, считаем его белым
+        const pixelR = alpha === 0 ? 255 : data[i];
+        const pixelG = alpha === 0 ? 255 : data[i + 1];
+        const pixelB = alpha === 0 ? 255 : data[i + 2];
+        r += pixelR;
+        g += pixelG;
+        b += pixelB;
         count++;
     }
     return {
