@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { baseURL } from '../api';
 import "./UserStyles.css";
 import {truncateText} from "../utils/helpers";
-import {SHORT_TEXT_MAX_LENGTH} from "../utils/consts";
+import {NAME_VISIBLE_MAX_LENGTH, SHORT_TEXT_MAX_LENGTH} from "../utils/consts";
 
 function UserItem({ user }) {
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ function UserItem({ user }) {
             <Card style={{ cursor: "pointer" }}>
                 <Card.Img variant="top" src={photoUrl} />
                 <Card.Body>
-                    <Card.Title>{user.name}</Card.Title>
+                    <Card.Title>{truncateText(user.name, NAME_VISIBLE_MAX_LENGTH)}</Card.Title>
                     <Card.Text>{truncateText(user.bio, SHORT_TEXT_MAX_LENGTH)}</Card.Text>
                 </Card.Body>
                 <Card.Footer>

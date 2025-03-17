@@ -3,7 +3,8 @@ import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
 import {baseURL} from "../api";
-import {formatDate} from "../utils/helpers";
+import {formatDate, truncateText} from "../utils/helpers";
+import {TITLE_VISIBLE_MAX_LENGTH} from "../utils/consts";
 
 function AudioItem({ beat }) {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function AudioItem({ beat }) {
             <Card style={{ cursor: "pointer" }}>
                 <Card.Img variant="top" src={photoUrl} />
                 <Card.Body>
-                    <Card.Title>{beat.title}</Card.Title>
+                    <Card.Title>{truncateText(beat.title, TITLE_VISIBLE_MAX_LENGTH)}</Card.Title>
                     <Card.Text>
                         <span className="audio-item__username"
                               onClick={(e) => {
