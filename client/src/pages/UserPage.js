@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
 import { baseURL, getFullUserByUsername, getMyProfile } from '../api';
 import AudioList from "../components/AudioList";
-import {MAIN_ROUTE} from "../utils/consts";
+import {DEFAULT_AVATAR_IMAGE_FILENAME, DEFAULT_PATH, MAIN_ROUTE} from "../utils/consts";
 import NotFoundPage from "./NotFoundPage";
 import { Context } from "../index";
 import {formatDate, truncateText} from "../utils/helpers";
@@ -67,7 +67,7 @@ function UserPage() {
         return <div>Произошла ошибка</div>;
     }
 
-    const photoUrl = user.profile.photo_url ? baseURL + user.profile.photo_url : 'https://dummyimage.com/500x500';
+    const photoUrl = user.profile.photo_url ? baseURL + user.profile.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_AVATAR_IMAGE_FILENAME;
 
     const handleEditClick = () => {
         // Логика для редактирования профиля

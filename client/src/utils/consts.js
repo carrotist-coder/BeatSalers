@@ -6,6 +6,9 @@ export const MY_PROFILE_ROUTE = '/me'; // Страница текущего пр
 export const BEATS_ROUTE = '/beats'; // Страница битов
 export const BEAT_DETAILS_ROUTE = '/beats/:id'; // Страница деталей бита
 
+export const DEFAULT_PATH = '/uploads/default';
+export const DEFAULT_AVATAR_IMAGE_FILENAME = 'default_avatar.png';
+
 export const TITLE_VISIBLE_MAX_LENGTH = 27;
 export const NAME_VISIBLE_MAX_LENGTH = 18;
 export const SHORT_TEXT_MAX_LENGTH = 50;

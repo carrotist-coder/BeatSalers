@@ -4,7 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { baseURL } from '../api';
 import "./UserStyles.css";
 import {truncateText} from "../utils/helpers";
-import {NAME_VISIBLE_MAX_LENGTH, SHORT_TEXT_MAX_LENGTH} from "../utils/consts";
+import {
+    DEFAULT_AVATAR_IMAGE_FILENAME,
+    DEFAULT_PATH,
+    NAME_VISIBLE_MAX_LENGTH,
+    SHORT_TEXT_MAX_LENGTH
+} from "../utils/consts";
 
 function UserItem({ user }) {
     const navigate = useNavigate();
@@ -12,7 +17,7 @@ function UserItem({ user }) {
         navigate('/profiles/' + user.username);
     };
 
-    const photoUrl = user.photo_url ? baseURL + user.photo_url : 'https://dummyimage.com/300x300';
+    const photoUrl = user.photo_url ? baseURL + user.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_AVATAR_IMAGE_FILENAME;
 
     return (
         <CardGroup className="user-item" onClick={handleCardClick}>
