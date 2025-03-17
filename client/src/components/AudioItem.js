@@ -44,7 +44,7 @@ function AudioItem({ beat }) {
                 </Card.Body>
                 <Card.Footer className="price-footer">
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <span className="price-tag">{beat.price} BYN</span>
+                        <span className="price-tag">{beat.price === 0 ? "Бесплатно!" : `${beat.price} BYN`}</span>
                     </div>
                 </Card.Footer>
             </Card>

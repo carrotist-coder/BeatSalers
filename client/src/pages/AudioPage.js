@@ -81,7 +81,7 @@ function AudioPage() {
                                 className="audio-page__beat-image"
                                 onLoad={handleImageLoad}
                             />
-                            <span className="audio-page__price-tag">{beat.price} BYN</span>
+                            <span className="audio-page__price-tag">{beat.price === 0 ? "Бесплатно!" : `${beat.price} BYN`}</span>
                         </div>
                     </Col>
                     <Col md={6} className="audio-page__info-section" style={{ color: textColor }}>
