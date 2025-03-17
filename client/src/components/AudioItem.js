@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
 import {baseURL} from "../api";
 import {formatDate, truncateText} from "../utils/helpers";
-import {TITLE_VISIBLE_MAX_LENGTH} from "../utils/consts";
+import {DEFAULT_BEAT_IMAGE_FILENAME, DEFAULT_PATH, TITLE_VISIBLE_MAX_LENGTH} from "../utils/consts";
 
 function AudioItem({ beat }) {
     const navigate = useNavigate();
@@ -12,7 +12,7 @@ function AudioItem({ beat }) {
         navigate('/beats/' + beat.id);
     };
 
-    const photoUrl = beat.photo_url ? baseURL + beat.photo_url : 'https://dummyimage.com/300x300';
+    const photoUrl = beat.photo_url ? baseURL + beat.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_BEAT_IMAGE_FILENAME;
     const audioUrl = baseURL + beat.audio_url;
     
     return (

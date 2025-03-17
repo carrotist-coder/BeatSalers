@@ -8,6 +8,7 @@ export const BEAT_DETAILS_ROUTE = '/beats/:id'; // Страница детале
 
 export const DEFAULT_PATH = '/uploads/default';
 export const DEFAULT_AVATAR_IMAGE_FILENAME = 'default_avatar.png';
+export const DEFAULT_BEAT_IMAGE_FILENAME = 'default_beat.png';
 
 export const TITLE_VISIBLE_MAX_LENGTH = 27;
 export const NAME_VISIBLE_MAX_LENGTH = 18;
