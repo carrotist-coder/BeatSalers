@@ -22,10 +22,9 @@ const getUsers = (req, res, next) => {
 const getMyProfile = async (req, res, next) => {
     const userId = req.user.id;
     db.get(
-        `SELECT users.id, users.username, users.email, users.role, users.created_at,
-                profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url
+        `SELECT users.*, profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url
          FROM users
-                  JOIN profiles ON users.id = profiles.user_id
+             JOIN profiles ON users.id = profiles.user_id
          WHERE users.id = ?`,
         [userId],
         (err, row) => {
@@ -54,6 +53,7 @@ const getMyProfile = async (req, res, next) => {
                             email: row.email,
                             role: row.role,
                             created_at: row.created_at,
+                            updated_at: row.updated_at,
                         },
                         profile: {
                             name: row.name,
