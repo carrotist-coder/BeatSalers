@@ -93,9 +93,15 @@ const AudioList = ({ beats: providedBeats }) => {
                                 <Form.Label>Мин. BPM</Form.Label>
                                 <Form.Control
                                     type="number"
+                                    min="1"
+                                    max="400"
                                     placeholder="От"
                                     value={bpmMin}
-                                    onChange={(e) => setBpmMin(e.target.value)}
+                                    onChange={(e) => {
+                                        if (e.target.value === '' || (Number(e.target.value) >= 1 && Number(e.target.value) <= 400)) {
+                                            setBpmMin(e.target.value);
+                                        }
+                                    }}
                                 />
                             </Form.Group>
                         </Col>
@@ -104,9 +110,15 @@ const AudioList = ({ beats: providedBeats }) => {
                                 <Form.Label>Макс. BPM</Form.Label>
                                 <Form.Control
                                     type="number"
+                                    min="1"
+                                    max="400"
                                     placeholder="До"
                                     value={bpmMax}
-                                    onChange={(e) => setBpmMax(e.target.value)}
+                                    onChange={(e) => {
+                                        if (e.target.value === '' || (Number(e.target.value) >= 1 && Number(e.target.value) <= 400)) {
+                                            setBpmMax(e.target.value);
+                                        }
+                                    }}
                                 />
                             </Form.Group>
                         </Col>
@@ -115,9 +127,15 @@ const AudioList = ({ beats: providedBeats }) => {
                                 <Form.Label>Мин. цена</Form.Label>
                                 <Form.Control
                                     type="number"
+                                    min="0"
+                                    max="5000"
                                     placeholder="От"
                                     value={priceMin}
-                                    onChange={(e) => setPriceMin(e.target.value)}
+                                    onChange={(e) => {
+                                        if (e.target.value === '' || (Number(e.target.value) >= 0 && Number(e.target.value) <= 5000)) {
+                                            setPriceMin(e.target.value);
+                                        }
+                                    }}
                                 />
                             </Form.Group>
                         </Col>
@@ -126,9 +144,15 @@ const AudioList = ({ beats: providedBeats }) => {
                                 <Form.Label>Макс. цена</Form.Label>
                                 <Form.Control
                                     type="number"
+                                    min="0"
+                                    max="5000"
                                     placeholder="До"
                                     value={priceMax}
-                                    onChange={(e) => setPriceMax(e.target.value)}
+                                    onChange={(e) => {
+                                        if (e.target.value === '' || (Number(e.target.value) >= 0 && Number(e.target.value) <= 5000)) {
+                                            setPriceMax(e.target.value);
+                                        }
+                                    }}
                                 />
                             </Form.Group>
                         </Col>
