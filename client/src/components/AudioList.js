@@ -53,7 +53,7 @@ const AudioList = ({ beats: providedBeats }) => {
     return (
         <Container className="user-list">
             <h3 className="list__title">Аранжировки:</h3>
-            <Card className="p-4 mb-4">
+            <Card className="p-4 mb-4 search-bar">
                 <Form>
                     <Row className="gy-3">
                         <Col md={4}>
