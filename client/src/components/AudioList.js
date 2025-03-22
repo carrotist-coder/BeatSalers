@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Container, Row, Col, Card } from 'react-bootstrap';
 import AudioItem from './AudioItem';
 import { getAllBeats } from '../api';
+import { STYLES } from "../utils/consts";
 
 const AudioList = ({ beats: providedBeats }) => {
     const [beats, setBeats] = useState(providedBeats || []);
@@ -81,11 +82,15 @@ const AudioList = ({ beats: providedBeats }) => {
                             <Form.Group controlId="styleQuery">
                                 <Form.Label>Стиль</Form.Label>
                                 <Form.Control
-                                    type="text"
-                                    placeholder="Введите стиль..."
+                                    as="select"
                                     value={styleQuery}
                                     onChange={(e) => setStyleQuery(e.target.value)}
-                                />
+                                >
+                                    <option value="">Любой стиль</option>
+                                    {STYLES.map((style, index) => (
+                                        <option key={index} value={style.toLowerCase()}>{style}</option>
+                                    ))}
+                                </Form.Control>
                             </Form.Group>
                         </Col>
                         <Col md={2}>
