@@ -9,6 +9,7 @@ import NotFoundPage from "./NotFoundPage";
 import { Context } from "../index";
 import {formatDate, truncateText} from "../utils/helpers";
 import {getAverageColor, getTextColor} from "../utils/colorHelpers";
+import UserEditModal from "../modals/UserEditModal";
 
 function UserPage() {
     const navigate = useNavigate();
@@ -20,28 +21,30 @@ function UserPage() {
     const isMyProfile = !username; // Для маршрута /me параметр username будет undefined
     const [bgColor, setBgColor] = useState('#ffffff');
     const [textColor, setTextColor] = useState('#000');
+    const [isEditModalOpen, setEditModalOpen] = useState(false); // Состояние для модального окна
+
+    const fetchUserData = async () => {
+        setLoading(true);
+        try {
+            let data;
+            if (isMyProfile) {
+                data = await getMyProfile();
+            } else {
+                data = await getFullUserByUsername(username);
+            }
+            setUser(data);
+        } catch (error) {
+            if (error.response?.status === 404) {
+                setUserNotFound(true);
+            } else {
+                console.error('Ошибка при получении данных пользователя:', error);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchUserData = async () => {
-            setLoading(true);
-            try {
-                let data;
-                if (isMyProfile) {
-                    data = await getMyProfile();
-                } else {
-                    data = await getFullUserByUsername(username);
-                }
-                setUser(data);
-            } catch (error) {
-                if (error.response?.status === 404) {
-                    setUserNotFound(true);
-                } else {
-                    console.error('Ошибка при получении данных пользователя:', error);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchUserData();
     }, [username, isMyProfile]);
 
@@ -53,6 +56,17 @@ function UserPage() {
         const computedBgColor = `rgb(${r}, ${g}, ${b})`;
         setBgColor(computedBgColor);
         setTextColor(getTextColor(r, g, b));
+    };
+
+    const handleEditClick = () => {
+        setEditModalOpen(true);
+    };
+
+    const handleModalClose = (shouldReload) => {
+        setEditModalOpen(false);
+        if (shouldReload) {
+            fetchUserData();
+        }
     };
 
     if (isLoading) {
@@ -68,11 +82,6 @@ function UserPage() {
     }
 
     const photoUrl = user.profile.photo_url ? baseURL + user.profile.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_AVATAR_IMAGE_FILENAME;
-
-    const handleEditClick = () => {
-        // Логика для редактирования профиля
-        // (будет дописываться)
-    };
 
     return (
         <div className="user-page">
@@ -137,6 +146,11 @@ function UserPage() {
                     <AudioList beats={user.beats}/>
                 </div>
             </div>
+            <UserEditModal
+                show={isEditModalOpen}
+                onHide={handleModalClose}
+                user={user}
+            />
         </div>
     );
 }

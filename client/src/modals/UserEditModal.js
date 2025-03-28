@@ -1,0 +1,132 @@
+import React, { useState } from 'react';
+import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
+
+function UserEditModal({ show, onHide, user }) {
+    const originalUser = user.user;
+    const originalProfile = user.profile;
+
+    const [name, setName] = useState(originalProfile.name);
+    const [username, setUsername] = useState(originalUser.username);
+    const [email, setEmail] = useState(originalUser.email);
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [bio, setBio] = useState(originalProfile.bio);
+    const [socialMediaLink, setSocialMediaLink] = useState(originalProfile.social_media_link);
+    const [photo, setPhoto] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
+
+    const handleSave = async () => {
+        if (newPassword && newPassword !== confirmPassword) {
+            setErrorMessage('Пароли не совпадают');
+            return;
+        }
+
+        setErrorMessage('');
+        onHide(true);
+    };
+
+    const handleCancel = () => {
+        setErrorMessage('');
+        onHide(false);
+    };
+
+    return (
+        <Modal
+            show={show}
+            onHide={handleCancel}
+            backdrop="static"
+            size="lg"
+        >
+            <Modal.Header closeButton>
+                <Modal.Title>Редактировать профиль</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Form>
+                    {/* Блок с основной информацией */}
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group>
+                                <Form.Label>Имя</Form.Label>
+                                <Form.Control type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group>
+                                <Form.Label>Логин</Form.Label>
+                                <Form.Control type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    {/* Email и ссылка на соцсети */}
+                    <Row className="mb-3">
+                        <Col md={6}>
+                            <Form.Group>
+                                <Form.Label>Email</Form.Label>
+                                <Form.Control type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                        <Col md={6}>
+                            <Form.Group>
+                                <Form.Label>Ссылка на соцсети</Form.Label>
+                                <Form.Control type="text" value={socialMediaLink} onChange={(e) => setSocialMediaLink(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    {/* Блок с паролями */}
+                    <Row className="mb-3">
+                        <Col md={4}>
+                            <Form.Group>
+                                <Form.Label>Старый пароль</Form.Label>
+                                <Form.Control type="password" value={oldPassword} onChange={(e) => setOldPassword(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group>
+                                <Form.Label>Новый пароль</Form.Label>
+                                <Form.Control type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                        <Col md={4}>
+                            <Form.Group>
+                                <Form.Label>Подтвердите пароль</Form.Label>
+                                <Form.Control type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+
+                    {/* Описание и фото */}
+                    <Row className="mb-3">
+                        <Col md={12}>
+                            <Form.Group>
+                                <Form.Label>Описание</Form.Label>
+                                <Form.Control as="textarea" rows={3} value={bio} onChange={(e) => setBio(e.target.value)} />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col md={12}>
+                            <Form.Group>
+                                <Form.Label>Фото</Form.Label>
+                                <Form.Control type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} />
+                            </Form.Group>
+                        </Col>
+                    </Row>
+                </Form>
+                {errorMessage && (
+                    <div className="mt-3" style={{ color: 'red', textAlign: 'center' }}>
+                        {errorMessage}
+                    </div>
+                )}
+            </Modal.Body>
+            <Modal.Footer>
+                <Button variant="danger" onClick={handleCancel}>Отмена</Button>
+                <Button variant="success" onClick={handleSave}>Сохранить</Button>
+            </Modal.Footer>
+        </Modal>
+    );
+}
+
+export default UserEditModal;
