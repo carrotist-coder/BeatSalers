@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
+import { updateProfile, updateUser } from "../api";
 
 function UserEditModal({ show, onHide, user }) {
     const originalUser = user.user;
@@ -21,9 +22,39 @@ function UserEditModal({ show, onHide, user }) {
             setErrorMessage('Пароли не совпадают');
             return;
         }
+        try {
+            // Обновление данных пользователя (username, email, пароль)
+            if (username !== originalUser.username ||
+                email !== originalUser.email ||
+                newPassword) {
 
-        setErrorMessage('');
-        onHide(true);
+                await updateUser(originalUser.id, {
+                    username,
+                    email,
+                    password: newPassword || undefined,
+                    oldPassword,
+                });
+            }
+
+            // Обновление данных профиля (имя, био, соцсети)
+            if (name !== originalProfile.name ||
+                bio !== originalProfile.bio ||
+                socialMediaLink !== originalProfile.social_media_link) {
+
+                await updateProfile({
+                    name,
+                    bio,
+                    social_media_link: socialMediaLink,
+                });
+            }
+
+            // TODO: Добавить загрузку фото
+
+            setErrorMessage('');
+            onHide(true);
+        } catch (error) {
+            setErrorMessage('Ошибка при сохранении. Проверьте данные.');
+        }
     };
 
     const handleCancel = () => {

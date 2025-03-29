@@ -159,7 +159,7 @@ const addUser = async (req, res, next) => {
 // Функция для обновления пользователя
 const updateUser = async (req, res, next) => {
     const userId = parseInt(req.params.id, 10);
-    const { username, email, password, role } = req.body;
+    const { username, email, password, role, oldPassword } = req.body;
     const currentUserId = req.user.id;
     const currentUserRole = req.user.role;
 
@@ -182,11 +182,20 @@ const updateUser = async (req, res, next) => {
 
     // Если передан новый пароль
     if (password) {
-        try {
-            hashedPassword = await bcrypt.hash(password, 5);
-        } catch (err) {
-            return next(ApiError.internal('Ошибка при хешировании пароля'));
+        // Получаем текущий хеш пароля из БД
+        const user = await new Promise((resolve, reject) => {
+            db.get('SELECT password FROM users WHERE id = ?', [userId], (err, row) => {
+                if (err) reject(err);
+                resolve(row);
+            });
+        });
+
+        // Проверяем старый пароль
+        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!passwordMatch) {
+            return next(ApiError.badRequest('Неверный старый пароль'));
         }
+        hashedPassword = await bcrypt.hash(password, 5);
     }
 
     const updatedAt = new Date().toISOString();
