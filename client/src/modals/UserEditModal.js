@@ -53,7 +53,7 @@ function UserEditModal({ show, onHide, user }) {
             setErrorMessage('');
             onHide(true);
         } catch (error) {
-            setErrorMessage('Ошибка при сохранении. Проверьте данные.');
+            setErrorMessage(error.response?.data?.message ?? 'Ошибка при сохранении. Проверьте данные.');
         }
     };
 
