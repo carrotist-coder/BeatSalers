@@ -18,9 +18,27 @@ function UserEditModal({ show, onHide, user }) {
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleSave = async () => {
-        if (newPassword && newPassword !== confirmPassword) {
-            setErrorMessage('Пароли не совпадают');
+        if (!name.trim()) {
+            setErrorMessage('Имя не должно быть пустым');
             return;
+        }
+        if (!username.trim()) {
+            setErrorMessage('Логин не должен быть пустым');
+            return;
+        }
+        if (!email.trim()) {
+            setErrorMessage('Email не должен быть пустым');
+            return;
+        }
+        if (newPassword) {
+            if (newPassword !== confirmPassword) {
+                setErrorMessage('Пароли не совпадают');
+                return;
+            }
+            if (!oldPassword) {
+                setErrorMessage('Введите старый пароль для подтверждения');
+                return;
+            }
         }
         try {
             // Обновление данных пользователя (username, email, пароль)
