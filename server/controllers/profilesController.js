@@ -23,7 +23,6 @@ const getMyProfile = (req, res, next) => {
 const updateMyProfile = async (req, res, next) => {
     const userId = req.user.id;
     const { name, bio, social_media_link, removePhoto } = req.body;
-    let photo_url = null;
 
     // Функция для удаления старого файла
     const deleteOldPhoto = (oldPhotoUrl) => {
@@ -71,6 +70,7 @@ const updateMyProfile = async (req, res, next) => {
             }
 
             const oldPhotoUrl = row.photo_url;
+            let photo_url = oldPhotoUrl;
 
             if (req.file) {
                 // Если загружен новый файл
