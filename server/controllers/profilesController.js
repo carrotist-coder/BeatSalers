@@ -20,12 +20,16 @@ const getMyProfile = (req, res, next) => {
 const updateMyProfile = (req, res, next) => {
     const userId = req.user.id;
     const { name, bio, social_media_link } = req.body;
+    let photo_url = null;
+    if (req.file) {
+        photo_url = `/uploads/profiles/${req.file.filename}`;
+    }
 
     const updatedAt = new Date().toISOString();
 
     db.run(
-        'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), updated_at = ? WHERE user_id = ?',
-        [name, bio, social_media_link, updatedAt, userId],
+        'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), photo_url = COALESCE(?, photo_url), updated_at = ? WHERE user_id = ?',
+        [name, bio, social_media_link, photo_url, updatedAt, userId],
         function (err) {
             if (err) {
                 return next(ApiError.internal('Ошибка при обновлении профиля'));

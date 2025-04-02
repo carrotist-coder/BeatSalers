@@ -54,19 +54,16 @@ function UserEditModal({ show, onHide, user }) {
                 });
             }
 
-            // Обновление данных профиля (имя, био, соцсети)
-            if (name !== originalProfile.name ||
-                bio !== originalProfile.bio ||
-                socialMediaLink !== originalProfile.social_media_link) {
-
-                await updateProfile({
-                    name,
-                    bio,
-                    social_media_link: socialMediaLink,
-                });
+            // Обновление данных профиля (имя, био, соцсети, фото)
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('bio', bio);
+            formData.append('social_media_link', socialMediaLink);
+            if (photo) {
+                formData.append('photo', photo);
             }
-
-            // TODO: Добавить загрузку фото
+            console.log([...formData.entries()]);
+            await updateProfile(formData);
 
             setErrorMessage('');
             onHide(true);
@@ -159,7 +156,7 @@ function UserEditModal({ show, onHide, user }) {
                         <Col md={12}>
                             <Form.Group>
                                 <Form.Label>Фото</Form.Label>
-                                <Form.Control type="file" accept="image/*" onChange={(e) => setPhoto(e.target.files[0])} />
+                                <Form.Control type="file" accept="image/*" name="photo" onChange={(e) => setPhoto(e.target.files[0])} />
                             </Form.Group>
                         </Col>
                     </Row>
