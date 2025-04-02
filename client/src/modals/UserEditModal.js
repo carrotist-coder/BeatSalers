@@ -15,6 +15,7 @@ function UserEditModal({ show, onHide, user }) {
     const [bio, setBio] = useState(originalProfile.bio);
     const [socialMediaLink, setSocialMediaLink] = useState(originalProfile.social_media_link);
     const [photo, setPhoto] = useState(null);
+    const [removePhoto, setRemovePhoto] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleSave = async () => {
@@ -62,6 +63,7 @@ function UserEditModal({ show, onHide, user }) {
             if (photo) {
                 formData.append('photo', photo);
             }
+            formData.append('removePhoto', removePhoto);
             console.log([...formData.entries()]);
             await updateProfile(formData);
 
@@ -74,7 +76,13 @@ function UserEditModal({ show, onHide, user }) {
 
     const handleCancel = () => {
         setErrorMessage('');
+        setRemovePhoto(false);
         onHide(false);
+    };
+
+    const handleRemovePhoto = () => {
+        setRemovePhoto(true);
+        setPhoto(null);
     };
 
     return (
@@ -152,12 +160,22 @@ function UserEditModal({ show, onHide, user }) {
                             </Form.Group>
                         </Col>
                     </Row>
-                    <Row>
+                    <Row className="mb-3">
                         <Col md={12}>
                             <Form.Group>
                                 <Form.Label>Фото</Form.Label>
                                 <Form.Control type="file" accept="image/*" name="photo" onChange={(e) => setPhoto(e.target.files[0])} />
                             </Form.Group>
+                            {originalProfile.photo_url && !removePhoto && (
+                                <Button variant="link" onClick={handleRemovePhoto} className="mt-2">
+                                    Удалить текущее фото
+                                </Button>
+                            )}
+                            {removePhoto && (
+                                <div className="mt-2" style={{ color: 'red' }}>
+                                    Фото будет удалено после сохранения
+                                </div>
+                            )}
                         </Col>
                     </Row>
                 </Form>

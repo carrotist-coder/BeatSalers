@@ -21,12 +21,12 @@ const getMyProfile = (req, res, next) => {
 // Обновить свой профиль (любой авторизованный пользователь)
 const updateMyProfile = (req, res, next) => {
     const userId = req.user.id;
-    const { name, bio, social_media_link } = req.body;
+    const { name, bio, social_media_link, removePhoto } = req.body;
     let photo_url = null;
 
     // Функция для удаления старого файла
     const deleteOldPhoto = (oldPhotoUrl) => {
-        if (oldPhotoUrl) {
+        if (oldPhotoUrl && typeof oldPhotoUrl === 'string') {
             const filePath = path.join(__dirname, '..', oldPhotoUrl);
             fs.unlink(filePath, (err) => {
                 if (err) {
@@ -49,10 +49,14 @@ const updateMyProfile = (req, res, next) => {
 
         const oldPhotoUrl = row.photo_url;
 
-        // Если загружен новый файл, устанавливаем новый photo_url и удаляем старый
         if (req.file) {
+            // Если загружен новый файл
             photo_url = `/uploads/profiles/${req.file.filename}`;
+            deleteOldPhoto(oldPhotoUrl); // Удаляем старое фото
+        } else if (removePhoto === 'true' && oldPhotoUrl) {
+            // Если указано удаление фото
             deleteOldPhoto(oldPhotoUrl);
+            photo_url = null;
         }
 
         const updatedAt = new Date().toISOString();
