@@ -78,16 +78,17 @@ const updateMyProfile = async (req, res, next) => {
                 await cropToSquare(filePath); // Обрезаем до квадрата
                 photo_url = `/uploads/profiles/${req.file.filename}`;
                 deleteOldPhoto(oldPhotoUrl); // Удаляем старое фото
-            } else if (removePhoto === 'true' && oldPhotoUrl) {
-                // Если указано удаление фото
-                deleteOldPhoto(oldPhotoUrl);
+            } else if (removePhoto === 'true') {
+                if (oldPhotoUrl) {
+                    deleteOldPhoto(oldPhotoUrl);
+                }
                 photo_url = null;
             }
 
             const updatedAt = new Date().toISOString();
 
             db.run(
-                'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), photo_url = COALESCE(?, photo_url), updated_at = ? WHERE user_id = ?',
+                'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), photo_url = ?, updated_at = ? WHERE user_id = ?',
                 [name, bio, social_media_link, photo_url, updatedAt, userId],
                 function (err) {
                     if (err) {
