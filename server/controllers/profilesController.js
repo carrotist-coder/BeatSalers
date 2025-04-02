@@ -1,5 +1,7 @@
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
+const fs = require('fs');
+const path = require('path');
 
 // Получить свой профиль (любой авторизованный пользователь)
 const getMyProfile = (req, res, next) => {
@@ -21,25 +23,54 @@ const updateMyProfile = (req, res, next) => {
     const userId = req.user.id;
     const { name, bio, social_media_link } = req.body;
     let photo_url = null;
-    if (req.file) {
-        photo_url = `/uploads/profiles/${req.file.filename}`;
-    }
 
-    const updatedAt = new Date().toISOString();
-
-    db.run(
-        'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), photo_url = COALESCE(?, photo_url), updated_at = ? WHERE user_id = ?',
-        [name, bio, social_media_link, photo_url, updatedAt, userId],
-        function (err) {
-            if (err) {
-                return next(ApiError.internal('Ошибка при обновлении профиля'));
-            }
-            if (this.changes === 0) {
-                return next(ApiError.notFound('Профиль не найден'));
-            }
-            res.status(200).json({ message: 'Профиль успешно обновлен' });
+    // Функция для удаления старого файла
+    const deleteOldPhoto = (oldPhotoUrl) => {
+        if (oldPhotoUrl) {
+            const filePath = path.join(__dirname, '..', oldPhotoUrl);
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error(`Ошибка при удалении старого фото ${oldPhotoUrl}:`, err);
+                } else {
+                    console.log(`Старое фото ${oldPhotoUrl} успешно удалено`);
+                }
+            });
         }
-    );
+    };
+
+    // Получаем текущий photo_url из базы данных
+    db.get('SELECT photo_url FROM profiles WHERE user_id = ?', [userId], (err, row) => {
+        if (err) {
+            return next(ApiError.internal('Ошибка при получении текущего профиля'));
+        }
+        if (!row) {
+            return next(ApiError.notFound('Профиль не найден'));
+        }
+
+        const oldPhotoUrl = row.photo_url;
+
+        // Если загружен новый файл, устанавливаем новый photo_url и удаляем старый
+        if (req.file) {
+            photo_url = `/uploads/profiles/${req.file.filename}`;
+            deleteOldPhoto(oldPhotoUrl);
+        }
+
+        const updatedAt = new Date().toISOString();
+
+        db.run(
+            'UPDATE profiles SET name = COALESCE(?, name), bio = COALESCE(?, bio), social_media_link = COALESCE(?, social_media_link), photo_url = COALESCE(?, photo_url), updated_at = ? WHERE user_id = ?',
+            [name, bio, social_media_link, photo_url, updatedAt, userId],
+            function (err) {
+                if (err) {
+                    return next(ApiError.internal('Ошибка при обновлении профиля'));
+                }
+                if (this.changes === 0) {
+                    return next(ApiError.notFound('Профиль не найден'));
+                }
+                res.status(200).json({ message: 'Профиль успешно обновлен' });
+            }
+        );
+    });
 };
 
 // Получить профиль пользователя по username
