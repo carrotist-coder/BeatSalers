@@ -11,4 +11,17 @@ const storage = multer.diskStorage({
     }
 });
 
-module.exports = multer({ storage: storage, limits: { fileSize: 10 * 1024 * 1024 } });
+const fileFilter = (req, file, cb) => {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (allowedTypes.includes(file.mimetype)) {
+        cb(null, true);
+    } else {
+        cb(new Error('Только изображения (JPEG, PNG, GIF) разрешены'));
+    }
+};
+
+module.exports = multer({
+    storage: storage,
+    limits: { fileSize: 10 * 1024 * 1024 },
+    fileFilter: fileFilter
+});
