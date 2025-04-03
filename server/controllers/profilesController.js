@@ -97,7 +97,12 @@ const updateMyProfile = async (req, res, next) => {
                     if (this.changes === 0) {
                         return next(ApiError.notFound('Профиль не найден'));
                     }
-                    res.status(200).json({ message: 'Профиль успешно обновлен' });
+                    db.run('UPDATE users SET updated_at = ? WHERE id = ?', [updatedAt, userId], (err) => {
+                        if (err) {
+                            return next(ApiError.internal('Ошибка при обновлении даты пользователя'));
+                        }
+                        res.status(200).json({ message: 'Профиль успешно обновлен' });
+                    });
                 }
             );
         });
