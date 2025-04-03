@@ -14,6 +14,7 @@ const AudioList = ({ beats: providedBeats }) => {
     const [priceMin, setPriceMin] = useState('');
     const [priceMax, setPriceMax] = useState('');
     const [sortOption, setSortOption] = useState('');
+    const [currentAudio, setCurrentAudio] = useState(null);
 
     useEffect(() => {
         if (!providedBeats) {
@@ -28,6 +29,14 @@ const AudioList = ({ beats: providedBeats }) => {
             fetchBeats();
         }
     }, [providedBeats]);
+
+    const handleAudioPlay = (audioElement) => {
+        if (currentAudio && currentAudio !== audioElement) {
+            currentAudio.pause();
+            currentAudio.currentTime = 0;
+        }
+        setCurrentAudio(audioElement);
+    };
 
     const filteredAndSortedBeats = beats
         .filter(beat =>
@@ -189,7 +198,13 @@ const AudioList = ({ beats: providedBeats }) => {
                     <strong>Ничего не найдено</strong>
                 </p>
             ) : (
-                filteredAndSortedBeats.map(beat => <AudioItem key={beat.id} beat={beat} />)
+                filteredAndSortedBeats.map(beat => (
+                    <AudioItem
+                        key={beat.id}
+                        beat={beat}
+                        onPlay={handleAudioPlay}
+                    />
+                ))
             )}
         </Container>
     );

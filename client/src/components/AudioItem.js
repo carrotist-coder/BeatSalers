@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef} from "react";
 import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./UserStyles.css";
@@ -6,10 +6,16 @@ import {baseURL} from "../api";
 import {formatDate, truncateText} from "../utils/helpers";
 import {DEFAULT_BEAT_IMAGE_FILENAME, DEFAULT_PATH, TITLE_VISIBLE_MAX_LENGTH} from "../utils/consts";
 
-function AudioItem({ beat }) {
+function AudioItem({ beat, onPlay }) {
     const navigate = useNavigate();
+    const audioRef = useRef(null);
+
     const handleCardClick = () => {
         navigate('/beats/' + beat.id);
+    };
+
+    const handlePlay = () => {
+        if (onPlay) onPlay(audioRef.current);
     };
 
     const photoUrl = beat.photo_url ? baseURL + beat.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_BEAT_IMAGE_FILENAME;
@@ -35,11 +41,13 @@ function AudioItem({ beat }) {
                         <div><strong>Создан: </strong>{formatDate(beat.created_at)}</div>
                     </Card.Text>
                     <audio
+                        ref={audioRef}
                         controls
-                        style={{ width: "100%" }}
+                        style={{width: "100%"}}
                         onClick={(e) => e.stopPropagation()}
+                        onPlay={handlePlay}
                     >
-                        <source src={audioUrl} type="audio/mpeg" />
+                        <source src={audioUrl} type="audio/mpeg"/>
                         Ваш браузер не поддерживает элемент audio.
                     </audio>
                 </Card.Body>
