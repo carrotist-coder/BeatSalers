@@ -103,7 +103,14 @@ function UserPage() {
                             </Col>
                             <Col md={6} className="user-page__info-section" style={{ color: textColor }}>
                                 <Card.Body className="d-flex flex-column h-100 justify-content-center">
-                                    <Card.Title className="user-page__title">{user.profile.name}</Card.Title>
+                                    <Card.Title className="user-page__title">{user.profile.name}
+                                        {user.user.role === 'admin' && (
+                                            <img
+                                                src="/media/checkmark.png"
+                                                alt="Админ"
+                                                className="checkmark-icon"
+                                            />
+                                        )}</Card.Title>
                                     <Card.Text className="user-page__author">@{user.user.username}</Card.Text>
                                     <Card.Text className="user-page__description">
                                         <strong>Описание: </strong><br/> {truncateText(user.profile.bio, 0)}

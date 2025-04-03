@@ -24,7 +24,15 @@ function UserItem({ user }) {
             <Card style={{ cursor: "pointer" }}>
                 <Card.Img variant="top" src={photoUrl} />
                 <Card.Body>
-                    <Card.Title>{truncateText(user.name, NAME_VISIBLE_MAX_LENGTH)}</Card.Title>
+                    <Card.Title>
+                        {truncateText(user.name, NAME_VISIBLE_MAX_LENGTH)}
+                        {user.role === 'admin' && (
+                            <img
+                                src="/media/checkmark.png"
+                                alt="Админ"
+                                className="checkmark-icon-sm"
+                            />
+                        )}</Card.Title>
                     <Card.Text>{truncateText(user.bio, SHORT_TEXT_MAX_LENGTH)}</Card.Text>
                 </Card.Body>
                 <Card.Footer>
