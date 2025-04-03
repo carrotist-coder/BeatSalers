@@ -14,6 +14,6 @@ router.put('/me', authMiddleware(null), upload.single('photo'), profilesControll
 router.get('/:username', authMiddleware(null, false), profilesController.getProfileByUsername);
 
 // Обновить любой профиль (только админ)
-router.put('/:id', authMiddleware('admin'), profilesController.updateAnyProfile);
+router.put('/:id', authMiddleware('admin'), upload.single('photo'), profilesController.updateAnyProfile);
 
 module.exports = router;

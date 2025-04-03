@@ -134,7 +134,7 @@ function UserPage() {
                                         >
                                             Соцсети
                                         </Button>
-                                        {isCurrentUser && (
+                                        { (userStore.isAuth && (isCurrentUser || userStore.user.role === 'admin')) && (
                                             <Button
                                                 className="user-page__button"
                                                 variant="warning"

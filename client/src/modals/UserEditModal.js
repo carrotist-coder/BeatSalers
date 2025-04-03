@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, {useContext, useState} from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
-import { updateProfile, updateUser } from "../api";
+import {updateAnyProfile, updateProfile, updateUser} from "../api";
+import {Context} from "../index";
 
 function UserEditModal({ show, onHide, user }) {
     const originalUser = user.user;
     const originalProfile = user.profile;
-
+    const { user: userStore } = useContext(Context);
     const [name, setName] = useState(originalProfile.name);
     const [username, setUsername] = useState(originalUser.username);
     const [email, setEmail] = useState(originalUser.email);
@@ -42,6 +43,9 @@ function UserEditModal({ show, onHide, user }) {
             }
         }
         try {
+            const isCurrentUser = userStore.user.id === originalUser.id;
+            const isAdminEditing = userStore.user.role === 'admin' && !isCurrentUser;
+
             // Обновление данных пользователя (username, email, пароль)
             if (username !== originalUser.username ||
                 email !== originalUser.email ||
@@ -64,8 +68,12 @@ function UserEditModal({ show, onHide, user }) {
                 formData.append('photo', photo);
             }
             formData.append('removePhoto', removePhoto);
-            console.log([...formData.entries()]);
-            await updateProfile(formData);
+
+            if (isAdminEditing) {
+                await updateAnyProfile(originalUser.id, formData);
+            } else {
+                await updateProfile(formData);
+            }
 
             setErrorMessage('');
             onHide(true);

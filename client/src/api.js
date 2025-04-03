@@ -79,3 +79,17 @@ export const updateProfile = async (profileData) => {
         throw error;
     }
 };
+
+export const updateAnyProfile = async (userId, profileData) => {
+    try {
+        const response = await axios.put(
+            `${baseURL}/profiles/${userId}`,
+            profileData,
+            getHeaders()
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка обновления профиля:', error);
+        throw error;
+    }
+};
