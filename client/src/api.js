@@ -59,3 +59,23 @@ export const getMyProfile = async () => {
         throw error;
     }
 };
+
+export const updateUser = async (userId, userData) => {
+    try {
+        const response = await axios.put(`${baseURL}/users/${userId}`, userData, getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка обновления пользователя:', error);
+        throw error;
+    }
+};
+
+export const updateProfile = async (profileData) => {
+    try {
+        const response = await axios.put(`${baseURL}/profiles/me`, profileData, getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка обновления профиля:', error);
+        throw error;
+    }
+};
