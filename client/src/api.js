@@ -93,3 +93,16 @@ export const updateAnyProfile = async (userId, profileData) => {
         throw error;
     }
 };
+
+export const deleteMyProfile = async (password) => {
+    try {
+        const response = await axios.delete(baseURL + '/users/me', {
+            data: { password },
+            ...getHeaders()
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при удалении аккаунта:', error);
+        throw error;
+    }
+};

@@ -157,6 +157,10 @@ function UserPage() {
                 show={isEditModalOpen}
                 onHide={handleModalClose}
                 user={user}
+                onAccountDeleted={() => {
+                    userStore.setIsAuth(false);
+                    navigate(MAIN_ROUTE);
+                }}
             />
         </div>
     );

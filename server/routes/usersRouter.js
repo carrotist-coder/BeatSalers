@@ -17,6 +17,9 @@ router.post('/', authMiddleware(null), usersController.addUser);
 // - Пользователь может обновить только себя
 router.put('/:id', authMiddleware(null), usersController.updateUser);
 
+// Удалить текущего пользователя
+router.delete('/me', authMiddleware(null), usersController.deleteMyProfile);
+
 // Удалить пользователя (только админ)
 router.delete('/:id', authMiddleware('admin'), usersController.deleteUser);
 

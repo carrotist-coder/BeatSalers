@@ -1,12 +1,14 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
-import {updateAnyProfile, updateProfile, updateUser} from "../api";
-import {Context} from "../index";
+import { updateAnyProfile, updateProfile, updateUser } from "../api";
+import { Context } from "../index";
+import DeleteConfirmModal from './DeleteConfirmModal';
 
-function UserEditModal({ show, onHide, user }) {
+function UserEditModal({ show, onHide, user, onAccountDeleted }) {
     const originalUser = user.user;
     const originalProfile = user.profile;
     const { user: userStore } = useContext(Context);
+    const isCurrentUser = userStore.user.id === originalUser.id;
     const [name, setName] = useState(originalProfile.name);
     const [username, setUsername] = useState(originalUser.username);
     const [email, setEmail] = useState(originalUser.email);
@@ -18,6 +20,7 @@ function UserEditModal({ show, onHide, user }) {
     const [photo, setPhoto] = useState(null);
     const [removePhoto, setRemovePhoto] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
     const handleSave = async () => {
         if (!name.trim()) {
@@ -43,7 +46,6 @@ function UserEditModal({ show, onHide, user }) {
             }
         }
         try {
-            const isCurrentUser = userStore.user.id === originalUser.id;
             const isAdminEditing = userStore.user.role === 'admin' && !isCurrentUser;
 
             // Обновление данных пользователя (username, email, пароль)
@@ -194,9 +196,18 @@ function UserEditModal({ show, onHide, user }) {
                 )}
             </Modal.Body>
             <Modal.Footer>
-                <Button variant="danger" onClick={handleCancel}>Отмена</Button>
+                {isCurrentUser && (
+                    <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>Удалить аккаунт</Button>
+                )}
+                <Button variant="secondary" onClick={handleCancel}>Отмена</Button>
                 <Button variant="success" onClick={handleSave}>Сохранить</Button>
+
             </Modal.Footer>
+            <DeleteConfirmModal
+                show={showDeleteConfirm}
+                onHide={() => setShowDeleteConfirm(false)}
+                onDeleteSuccess={onAccountDeleted}
+            />
         </Modal>
     );
 }
