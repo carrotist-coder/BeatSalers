@@ -12,6 +12,7 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
     const [name, setName] = useState(originalProfile.name);
     const [username, setUsername] = useState(originalUser.username);
     const [email, setEmail] = useState(originalUser.email);
+    const [isAdmin, setIsAdmin] = useState(originalUser.role === 'admin');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -48,17 +49,23 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
         try {
             const isAdminEditing = userStore.user.role === 'admin' && !isCurrentUser;
 
-            // Обновление данных пользователя (username, email, пароль)
+            // Добавляем проверку изменения роли
+            const originalIsAdmin = originalUser.role === 'admin';
+            const roleChanged = isAdmin !== originalIsAdmin;
+
+            // Обновление данных пользователя (username, email, пароль, роль)
             if (
                 username !== originalUser.username ||
                 email !== originalUser.email ||
-                newPassword
+                newPassword ||
+                roleChanged
             ) {
                 await updateUser(originalUser.id, {
                     username,
                     email,
                     password: newPassword || undefined,
                     oldPassword,
+                    role: isAdmin ? 'admin' : 'user',
                 });
             }
 
@@ -198,6 +205,16 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
                 )}
             </Modal.Body>
             <Modal.Footer>
+                <Form.Group controlId="isAdminCheckbox" className="me-auto">
+                    <Form.Check
+                        type="checkbox"
+                        label="Админ"
+                        checked={isAdmin}
+                        onChange={(e) => setIsAdmin(e.target.checked)}
+                        disabled={userStore.user.role !== 'admin'}
+                    />
+                </Form.Group>
+
                 {(isCurrentUser || userStore.user.role === 'admin') && (
                     <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
                         Удалить аккаунт

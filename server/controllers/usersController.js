@@ -168,14 +168,21 @@ const updateUser = async (req, res, next) => {
         return next(ApiError.badRequest('ID пользователя обязателен'));
     }
 
-    // Проверка прав доступа
-    if (currentUserRole !== 'admin' && userId !== currentUserId) {
+    const isSelf = userId === currentUserId;
+
+    if (currentUserRole !== 'admin' && !isSelf) {
         return next(ApiError.forbidden('Вы можете обновить только свой профиль.'));
     }
 
-    // Если передана новая роль, проверяем права администратора
-    if (role && currentUserRole !== 'admin') {
-        return next(ApiError.forbidden('Только администратор может изменять роли пользователей.'));
+    let newRole = null;
+    if (role) {
+        if (currentUserRole !== 'admin') {
+            return next(ApiError.forbidden('Только администратор может изменять роли пользователей.'));
+        }
+        if (role !== 'admin' && role !== 'user') {
+            return next(ApiError.badRequest('Недопустимая роль'));
+        }
+        newRole = role;
     }
 
     let hashedPassword;
@@ -185,7 +192,8 @@ const updateUser = async (req, res, next) => {
         // Получаем текущий хеш пароля из БД
         const user = await new Promise((resolve, reject) => {
             db.get('SELECT password FROM users WHERE id = ?', [userId], (err, row) => {
-                if (err) reject(err);
+                if (err) return reject(err);
+                if (!row) return reject(ApiError.notFound('Пользователь не найден'));
                 resolve(row);
             });
         });
@@ -195,6 +203,7 @@ const updateUser = async (req, res, next) => {
         if (!passwordMatch) {
             return next(ApiError.badRequest('Неверный старый пароль'));
         }
+
         hashedPassword = await bcrypt.hash(password, 5);
     }
 
@@ -213,7 +222,7 @@ const updateUser = async (req, res, next) => {
 
     db.run(
         sql,
-        [username, email, hashedPassword || null, role || null, updatedAt, userId],
+        [username, email, hashedPassword || null, newRole || null, updatedAt, userId],
         function (err) {
             if (err) {
                 if (err.message.includes('UNIQUE constraint failed')) {
@@ -221,9 +230,11 @@ const updateUser = async (req, res, next) => {
                 }
                 return next(ApiError.internal('Ошибка при обновлении пользователя'));
             }
+
             if (this.changes === 0) {
                 return next(ApiError.notFound('Пользователь не найден'));
             }
+
             res.status(200).json({ message: 'Профиль успешно обновлен' });
         }
     );
