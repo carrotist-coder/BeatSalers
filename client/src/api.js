@@ -94,9 +94,10 @@ export const updateAnyProfile = async (userId, profileData) => {
     }
 };
 
-export const deleteMyProfile = async (password) => {
+export const deleteUser = async (password, userId = null) => {
     try {
-        const response = await axios.delete(baseURL + '/users/me', {
+        const url = userId ? `${baseURL}/users/${userId}` : `${baseURL}/users`;
+        const response = await axios.delete(url, {
             data: { password },
             ...getHeaders()
         });

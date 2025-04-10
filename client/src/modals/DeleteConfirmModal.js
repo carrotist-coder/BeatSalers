@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
-import { deleteMyProfile } from '../api';
+import { deleteUser } from '../api';
 
-function DeleteConfirmModal({ show, onHide, onDeleteSuccess }) {
+function DeleteConfirmModal({ show, onHide, onDeleteSuccess, userId }) {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleDelete = async () => {
         try {
-            await deleteMyProfile(password);
-            onHide(); // Закрыть модальное окно
-            onDeleteSuccess(); // Выполнить выход и перенаправление
+            await deleteUser(password, userId);
+            onHide();
+            onDeleteSuccess();
         } catch (error) {
             setErrorMessage('Неверный пароль или ошибка при удалении');
         }
@@ -24,7 +24,7 @@ function DeleteConfirmModal({ show, onHide, onDeleteSuccess }) {
             <Modal.Body>
                 <Form>
                     <Form.Group>
-                        <Form.Label>Введите текущий пароль для подтверждения:</Form.Label>
+                        <Form.Label>Введите пароль для подтверждения:</Form.Label>
                         <Form.Control
                             type="password"
                             value={password}

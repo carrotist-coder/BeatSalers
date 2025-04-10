@@ -230,141 +230,53 @@ const updateUser = async (req, res, next) => {
 };
 
 // Удалить пользователя (только админ)
-const deleteUser = (req, res, next) => {
-    const userId = parseInt(req.params.id, 10);
+const deleteUser = async (req, res, next) => {
     const currentUserId = req.user.id;
     const currentUserRole = req.user.role;
+    const { password } = req.body;
+    const userId = req.params.id ? parseInt(req.params.id, 10) : currentUserId;
 
-    if (currentUserRole !== 'admin') {
-        return next(ApiError.forbidden('Только администратор может удалить пользователя.'));
+    if (!password) {
+        return next(ApiError.badRequest('Пароль обязателен для удаления аккаунта'));
     }
 
-    if (userId === currentUserId) {
-        return next(ApiError.forbidden('Вы не можете удалить свой профиль.'));
+    // Проверка доступа
+    if (currentUserRole !== 'admin' && userId !== currentUserId) {
+        return next(ApiError.forbidden('Вы можете удалить только свой аккаунт'));
     }
 
-    // Начало транзакции
-    db.run('BEGIN TRANSACTION', (err) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка начала транзакции'));
-        }
+    // Проверка пароля
+    db.get('SELECT password FROM users WHERE id = ?', [currentUserRole === 'admin' ? currentUserId : userId], async (err, row) => {
+        if (err) return next(ApiError.internal('Ошибка при получении данных пользователя'));
+        if (!row) return next(ApiError.notFound('Пользователь не найден'));
 
-        // Удаление всех битов пользователя из таблицы beats
-        db.run('DELETE FROM beats WHERE seller_id = ?', [userId], function (beatsErr) {
-            if (beatsErr) {
-                db.run('ROLLBACK', () => {
-                    return next(ApiError.internal('Ошибка при удалении битов пользователя'));
-                });
-                return;
-            }
+        const passwordMatch = await bcrypt.compare(password, row.password);
+        if (!passwordMatch) return next(ApiError.forbidden('Неверный пароль'));
 
-            // Удаление профиля пользователя из таблицы user_profiles
-            db.run('DELETE FROM profiles WHERE user_id = ?', [userId], function (profileErr) {
-                if (profileErr) {
-                    db.run('ROLLBACK', () => {
-                        return next(ApiError.internal('Ошибка при удалении профиля пользователя'));
-                    });
-                    return;
-                }
+        db.run('BEGIN TRANSACTION', (transErr) => {
+            if (transErr) return next(ApiError.internal('Ошибка начала транзакции'));
 
-                // Удаление пользователя из таблицы users
-                db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
-                    if (userErr) {
-                        db.run('ROLLBACK', () => {
-                            return next(ApiError.internal('Ошибка при удалении пользователя'));
-                        });
-                        return;
-                    }
+            db.run('DELETE FROM beats WHERE seller_id = ?', [userId], function (beatsErr) {
+                if (beatsErr) return db.run('ROLLBACK', () => next(ApiError.internal('Ошибка при удалении битов пользователя')));
 
-                    if (this.changes === 0) {
-                        db.run('ROLLBACK', () => {
-                            return next(ApiError.notFound('Пользователь не найден'));
-                        });
-                        return;
-                    }
+                db.run('DELETE FROM profiles WHERE user_id = ?', [userId], function (profileErr) {
+                    if (profileErr) return db.run('ROLLBACK', () => next(ApiError.internal('Ошибка при удалении профиля пользователя')));
 
-                    // Если всё успешно, завершаем транзакцию
-                    db.run('COMMIT', (commitErr) => {
-                        if (commitErr) {
-                            return next(ApiError.internal('Ошибка завершения транзакции'));
+                    db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
+                        if (userErr || this.changes === 0) {
+                            return db.run('ROLLBACK', () => next(ApiError.internal('Ошибка при удалении пользователя')));
                         }
-                        res.status(200).json({ message: 'Пользователь, его профиль и все биты успешно удалены' });
+
+                        db.run('COMMIT', (commitErr) => {
+                            if (commitErr) return next(ApiError.internal('Ошибка завершения транзакции'));
+                            res.status(200).json({ message: 'Пользователь успешно удален' });
+                        });
                     });
                 });
             });
         });
     });
 };
-
-const deleteMyProfile = async (req, res, next) => {
-    const userId = req.user.id;
-    const {password} = req.body;
-
-    if (!password) {
-        return next(ApiError.badRequest('Пароль обязателен для удаления аккаунта'));
-    }
-
-    db.get('SELECT password FROM users WHERE id = ?', [userId], async (err, row) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка при получении данных пользователя'));
-        }
-        if (!row) {
-            return next(ApiError.notFound('Пользователь не найден'));
-        }
-
-        const passwordMatch = await bcrypt.compare(password, row.password);
-        if (!passwordMatch) {
-            return next(ApiError.forbidden('Неверный пароль'));
-        }
-
-        db.run('BEGIN TRANSACTION', (transErr) => {
-            if (transErr) {
-                return next(ApiError.internal('Ошибка начала транзакции'));
-            }
-
-            db.run('DELETE FROM beats WHERE seller_id = ?', [userId], function (beatsErr) {
-                if (beatsErr) {
-                    db.run('ROLLBACK', () => {
-                        return next(ApiError.internal('Ошибка при удалении битов пользователя'));
-                    });
-                    return;
-                }
-
-                db.run('DELETE FROM profiles WHERE user_id = ?', [userId], function (profileErr) {
-                    if (profileErr) {
-                        db.run('ROLLBACK', () => {
-                            return next(ApiError.internal('Ошибка при удалении профиля пользователя'));
-                        });
-                        return;
-                    }
-
-                    db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
-                        if (userErr) {
-                            db.run('ROLLBACK', () => {
-                                return next(ApiError.internal('Ошибка при удалении пользователя'));
-                            });
-                            return;
-                        }
-
-                        if (this.changes === 0) {
-                            db.run('ROLLBACK', () => {
-                                return next(ApiError.notFound('Пользователь не найден'));
-                            });
-                            return;
-                        }
-
-                        db.run('COMMIT', (commitErr) => {
-                            if (commitErr) {
-                                return next(ApiError.internal('Ошибка завершения транзакции'));
-                            }
-                            res.status(200).json({message: 'Аккаунт успешно удален'});
-                        });
-                    });
-                });
-            });
-        });
-    });
-}
 
 module.exports = {
     getUsers,
@@ -373,5 +285,4 @@ module.exports = {
     updateUser,
     deleteUser,
     getFullUserByUsername,
-    deleteMyProfile
 };

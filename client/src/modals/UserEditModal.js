@@ -196,8 +196,10 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
                 )}
             </Modal.Body>
             <Modal.Footer>
-                {isCurrentUser && (
-                    <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>Удалить аккаунт</Button>
+                {(isCurrentUser || userStore.user.role === 'admin') && (
+                    <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
+                        Удалить аккаунт
+                    </Button>
                 )}
                 <Button variant="secondary" onClick={handleCancel}>Отмена</Button>
                 <Button variant="success" onClick={handleSave}>Сохранить</Button>
@@ -207,6 +209,7 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
                 show={showDeleteConfirm}
                 onHide={() => setShowDeleteConfirm(false)}
                 onDeleteSuccess={onAccountDeleted}
+                userId={isCurrentUser ? null : originalUser.id}
             />
         </Modal>
     );
