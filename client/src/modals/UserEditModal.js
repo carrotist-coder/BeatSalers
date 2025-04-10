@@ -49,10 +49,11 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
             const isAdminEditing = userStore.user.role === 'admin' && !isCurrentUser;
 
             // Обновление данных пользователя (username, email, пароль)
-            if (username !== originalUser.username ||
+            if (
+                username !== originalUser.username ||
                 email !== originalUser.email ||
-                newPassword) {
-
+                newPassword
+            ) {
                 await updateUser(originalUser.id, {
                     username,
                     email,
@@ -63,14 +64,15 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
 
             // Обновление данных профиля (имя, био, соцсети, фото)
             const formData = new FormData();
-            formData.append('name', name);
-            formData.append('bio', bio);
-            formData.append('social_media_link', socialMediaLink);
+            formData.append('name', name.trim());
+            formData.append('bio', typeof bio === 'string' ? bio.trim() : '');
+            formData.append('social_media_link', typeof socialMediaLink === 'string' ? socialMediaLink.trim() : '');
             if (photo) {
                 formData.append('photo', photo);
             }
-            formData.append('removePhoto', removePhoto);
-
+            if (removePhoto) {
+                formData.append('removePhoto', 'true');
+            }
             if (isAdminEditing) {
                 await updateAnyProfile(originalUser.id, formData);
             } else {
