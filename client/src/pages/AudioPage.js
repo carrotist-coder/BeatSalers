@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./AudioPage.css";
@@ -7,6 +7,8 @@ import {BEATS_ROUTE, DEFAULT_BEAT_IMAGE_FILENAME, DEFAULT_PATH} from "../utils/c
 import NotFoundPage from "./NotFoundPage";
 import {formatDate, truncateText} from "../utils/helpers";
 import {getAverageColor, getTextColor} from '../utils/colorHelpers';
+import {Context} from "../index";
+import AudioEditModal from "../modals/AudioEditModal";
 
 function AudioPage() {
     const navigate = useNavigate();
@@ -16,23 +18,27 @@ function AudioPage() {
     const [isBeatNotFound, setBeatNotFound] = useState(false);
     const [bgColor, setBgColor] = useState('#ffffff');
     const [textColor, setTextColor] = useState('#000');
+    const [isEditModalOpen, setEditModalOpen] = useState(false);
+    const userStore = useContext(Context).user;
+    const isOwner = userStore.isAuth && beat && (userStore.user.id === beat.seller_id || userStore.user.role === 'admin');
+
+    const fetchBeatData = async () => {
+        setLoading(true);
+        try {
+            const data = await getBeatById(id);
+            setBeat(data);
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                setBeatNotFound(true);
+            } else {
+                console.error('Ошибка при получении данных аранжировки:', error);
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchBeatData = async () => {
-            setLoading(true);
-            try {
-                const data = await getBeatById(id);
-                setBeat(data);
-            } catch (error) {
-                if (error.response && error.response.status === 404) {
-                    setBeatNotFound(true);
-                } else {
-                    console.error('Ошибка при получении данных аранжировки:', error);
-                }
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchBeatData();
     }, [id]);
 
@@ -119,10 +125,25 @@ function AudioPage() {
                                 >
                                     Купить
                                 </Button>
+                                {isOwner && (
+                                    <Button
+                                        className="audio-page__edit-button"
+                                        variant="warning"
+                                        onClick={() => setEditModalOpen(true)}
+                                    >
+                                        Редактировать
+                                    </Button>
+                                )}
                             </div>
                         </Card.Body>
                     </Col>
                 </Row>
+                <AudioEditModal
+                    show={isEditModalOpen}
+                    onHide={() => setEditModalOpen(false)}
+                    beat={beat}
+                    onUpdated={() => fetchBeatData()}
+                />
             </Container>
         </div>
     );

@@ -128,7 +128,7 @@
     justify-content: space-between;
 }
 
-.audio-page__back-button, .audio-page__buy-button {
+.audio-page__back-button, .audio-page__buy-button, .audio-page__edit-button {
     font-size: 1.5rem;
     padding: 12px 30px;
     border-radius: 8px;
@@ -138,6 +138,7 @@
 }
 
 .audio-page__back-button:hover,
-.audio-page__buy-button:hover {
+.audio-page__buy-button:hover,
+.audio-page__edit-button:hover {
     transform: scale(1.02);
 }
