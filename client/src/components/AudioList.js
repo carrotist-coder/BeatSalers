@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Container, Row, Col, Card } from 'react-bootstrap';
+import {Form, Container, Row, Col, Card, Button} from 'react-bootstrap';
 import AudioItem from './AudioItem';
 import { getAllBeats } from '../api';
 import { STYLES } from "../utils/consts";
+import AudioFormModal from "../modals/AudioFormModal";
 
 const AudioList = ({ beats: providedBeats }) => {
     const [beats, setBeats] = useState(providedBeats || []);
@@ -15,6 +16,7 @@ const AudioList = ({ beats: providedBeats }) => {
     const [priceMax, setPriceMax] = useState('');
     const [sortOption, setSortOption] = useState('');
     const [currentAudio, setCurrentAudio] = useState(null);
+    const [showCreateModal, setShowCreateModal] = useState(false);
 
     useEffect(() => {
         if (!providedBeats) {
@@ -61,13 +63,18 @@ const AudioList = ({ beats: providedBeats }) => {
 
     return (
         <Container className="user-list">
-            <h3 className="list__title">Аранжировки:</h3>
+            <div className="user-list__row">
+                <h3 className="list__title">Аранжировки:</h3>
+                <Button variant="success" className="user-list__btn" onClick={() => setShowCreateModal(true)}>
+                    Добавить аранжировку
+                </Button>
+            </div>
             <Card className="p-4 mb-4 search-bar">
                 <Form>
                     <Row className="gy-3">
                         <Col md={4}>
                             <Form.Group controlId="searchQuery">
-                                <Form.Label>Название</Form.Label>
+                            <Form.Label>Название</Form.Label>
                                 <Form.Control
                                     type="text"
                                     placeholder="Введите название..."
@@ -194,7 +201,7 @@ const AudioList = ({ beats: providedBeats }) => {
             </Card>
 
             {filteredAndSortedBeats.length === 0 ? (
-                <p className="list__title" style={{ color: 'red' }}>
+                <p className="list__title" style={{color: 'red'}}>
                     <strong>Ничего не найдено</strong>
                 </p>
             ) : (
@@ -206,6 +213,15 @@ const AudioList = ({ beats: providedBeats }) => {
                     />
                 ))
             )}
+            <AudioFormModal
+                show={showCreateModal}
+                onHide={() => setShowCreateModal(false)}
+                onUpdated={() => {
+                    if (!providedBeats) {
+                        getAllBeats().then(setBeats);
+                    }
+                }}
+            />
         </Container>
     );
 };

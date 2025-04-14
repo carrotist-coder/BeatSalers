@@ -38,21 +38,48 @@ const getBeatById = (req, res, next) => {
 
 // Добавить новый бит
 const addBeat = async (req, res, next) => {
-    const { title, description, style, bpm, audio_url, price } = req.body;
-    const seller_id = req.user.id; // ID текущего пользователя как продавца
+    const { title, description, style, bpm, price } = req.body;
+    const seller_id = req.user.id;
     const createdAt = new Date().toISOString();
 
-    if (!title || !style || !audio_url || !price) {
-        return next(ApiError.badRequest('Необходимо заполнить все обязательные поля: title, style, audio_url, price.'));
+    let audio_url = null;
+    let photo_url = null;
+
+    // Проверка обязательных полей
+    if (!title || !style || !bpm || !price) {
+        return next(ApiError.badRequest('Необходимо заполнить все обязательные поля: title, style, bpm, price.'));
     }
 
-    if (price <= 0) {
-        return next(ApiError.badRequest('Цена должна быть больше нуля.'));
+    // Обработка загруженных файлов
+    if (req.files) {
+        if (req.files.audio && req.files.audio[0]) {
+            audio_url = '/uploads/beats/audio/' + req.files.audio[0].filename;
+        }
+
+        if (req.files.image && req.files.image[0]) {
+            photo_url = '/uploads/beats/images/' + req.files.image[0].filename;
+            const fullImagePath = path.join(__dirname, '..', photo_url);
+            try {
+                await cropToSquare(fullImagePath);
+            } catch (err) {
+                return next(ApiError.internal('Ошибка при обработке изображения'));
+            }
+        }
+    }
+
+    if (!audio_url) {
+        return next(ApiError.badRequest('Необходимо загрузить аудиофайл.'));
+    }
+
+    if (price < 0) {
+        return next(ApiError.badRequest('Цена должна быть неотрицательной.'));
     }
 
     db.run(
-        'INSERT INTO beats (title, description, style, bpm, audio_url, price, seller_id, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [title, description, style, bpm, audio_url, price, seller_id, createdAt, createdAt],
+        `INSERT INTO beats 
+         (title, description, style, bpm, audio_url, photo_url, price, seller_id, created_at, updated_at) 
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [title, description, style, bpm, audio_url, photo_url, price, seller_id, createdAt, createdAt],
         function (err) {
             if (err) {
                 return next(ApiError.internal('Ошибка при добавлении бита'));

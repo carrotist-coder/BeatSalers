@@ -14,6 +14,19 @@
     text-align: center;
 }
 
+.user-list__row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.user-list__btn {
+    position: absolute;
+    right: 0;
+}
+
 .search-bar {
     width: 100%;
     margin-bottom: 24px;

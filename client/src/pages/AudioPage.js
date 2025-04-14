@@ -8,7 +8,7 @@ import NotFoundPage from "./NotFoundPage";
 import {formatDate, truncateText} from "../utils/helpers";
 import {getAverageColor, getTextColor} from '../utils/colorHelpers';
 import {Context} from "../index";
-import AudioEditModal from "../modals/AudioEditModal";
+import AudioFormModal from "../modals/AudioFormModal";
 
 function AudioPage() {
     const navigate = useNavigate();
@@ -140,7 +140,7 @@ function AudioPage() {
                         </Card.Body>
                     </Col>
                 </Row>
-                <AudioEditModal
+                <AudioFormModal
                     show={isEditModalOpen}
                     onHide={() => setEditModalOpen(false)}
                     beat={beat}

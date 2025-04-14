@@ -1,26 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Modal, Form, Button, Col, Row } from 'react-bootstrap';
-import { updateBeat } from "../api";
+import { createBeat, updateBeat } from '../api';
 import DeleteAudioConfirmModal from './DeleteAudioConfirmModal';
 import { useNavigate } from 'react-router-dom';
 import { BEATS_ROUTE } from '../utils/consts';
 
-function AudioEditModal({ show, onHide, beat, onUpdated }) {
-    const [title, setTitle] = useState(beat.title);
-    const [description, setDescription] = useState(beat.description);
-    const [style, setStyle] = useState(beat.style);
-    const [bpm, setBpm] = useState(beat.bpm);
-    const [price, setPrice] = useState(beat.price);
+function AudioFormModal({ show, onHide, beat = null, onUpdated }) {
+    const isEditMode = !!beat;
+    const navigate = useNavigate();
+
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [style, setStyle] = useState('');
+    const [bpm, setBpm] = useState('');
+    const [price, setPrice] = useState('');
     const [audioFile, setAudioFile] = useState(null);
     const [imageFile, setImageFile] = useState(null);
     const [removeImage, setRemoveImage] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (isEditMode) {
+            setTitle(beat.title || '');
+            setDescription(beat.description || '');
+            setStyle(beat.style || '');
+            setBpm(beat.bpm ?? '');
+            setPrice(beat.price ?? '');
+        } else {
+            setTitle('');
+            setDescription('');
+            setStyle('');
+            setBpm('');
+            setPrice('');
+            setAudioFile(null);
+            setImageFile(null);
+            setRemoveImage(false);
+            setErrorMessage('');
+        }
+    }, [beat, show]);
 
     const handleSubmit = async () => {
-        if (!title || !style || !price) {
-            setErrorMessage('Заполните обязательные поля');
+        const validationErrors = [];
+
+        if (!title.trim()) validationErrors.push('Название');
+        if (!style.trim()) validationErrors.push('Стиль');
+        if (!bpm) validationErrors.push('BPM');
+        if (price === '' || isNaN(Number(price)) || Number(price) < 0) {
+            validationErrors.push('Цена');
+        }
+        if (!isEditMode && !audioFile) validationErrors.push('Аудиофайл');
+
+        if (validationErrors.length > 0) {
+            setErrorMessage(`Заполните обязательные поля: ${validationErrors.join(', ')}`);
             return;
         }
 
@@ -35,8 +67,12 @@ function AudioEditModal({ show, onHide, beat, onUpdated }) {
         if (removeImage) formData.append('removeImage', 'true');
 
         try {
-            await updateBeat(beat.id, formData);
-            onUpdated();
+            if (isEditMode) {
+                await updateBeat(beat.id, formData);
+            } else {
+                await createBeat(formData);
+            }
+            onUpdated?.();
             onHide();
         } catch (error) {
             setErrorMessage(error.response?.data?.message || 'Ошибка сохранения');
@@ -52,7 +88,9 @@ function AudioEditModal({ show, onHide, beat, onUpdated }) {
         <>
             <Modal show={show} onHide={onHide} size="lg">
                 <Modal.Header closeButton>
-                    <Modal.Title>Редактировать аранжировку</Modal.Title>
+                    <Modal.Title>
+                        {isEditMode ? 'Редактировать аранжировку' : 'Добавить аранжировку'}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form>
@@ -98,7 +136,7 @@ function AudioEditModal({ show, onHide, beat, onUpdated }) {
                                     setRemoveImage(false);
                                 }}
                             />
-                            {beat.photo_url && !removeImage && (
+                            {isEditMode && beat.photo_url && !removeImage && (
                                 <Button
                                     variant="link"
                                     onClick={() => setRemoveImage(true)}
@@ -117,22 +155,28 @@ function AudioEditModal({ show, onHide, beat, onUpdated }) {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
-                        Удалить аранжировку
-                    </Button>
+                    {isEditMode && (
+                        <Button variant="danger" onClick={() => setShowDeleteConfirm(true)}>
+                            Удалить аранжировку
+                        </Button>
+                    )}
                     <Button variant="secondary" onClick={onHide}>Отмена</Button>
-                    <Button variant="success" onClick={handleSubmit}>Сохранить</Button>
+                    <Button variant="success" onClick={handleSubmit}>
+                        {isEditMode ? 'Сохранить' : 'Добавить'}
+                    </Button>
                 </Modal.Footer>
             </Modal>
 
-            <DeleteAudioConfirmModal
-                show={showDeleteConfirm}
-                onHide={() => setShowDeleteConfirm(false)}
-                beatId={beat.id}
-                onDeleteSuccess={handleDeleteSuccess}
-            />
+            {isEditMode && (
+                <DeleteAudioConfirmModal
+                    show={showDeleteConfirm}
+                    onHide={() => setShowDeleteConfirm(false)}
+                    beatId={beat.id}
+                    onDeleteSuccess={handleDeleteSuccess}
+                />
+            )}
         </>
     );
 }
 
-export default AudioEditModal;
+export default AudioFormModal;

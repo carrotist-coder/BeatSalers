@@ -134,3 +134,13 @@ export const deleteBeat = async (beatId) => {
         throw error;
     }
 };
+
+export const createBeat = async (formData) => {
+    try {
+        const response = await axios.post(`${baseURL}/beats`, formData, getHeaders());
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при создании бита:', error);
+        throw error;
+    }
+};
