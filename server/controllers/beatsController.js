@@ -8,7 +8,7 @@ const {cropToSquare} = require("../utils/imageHelpers");
 const getAllBeats = (req, res, next) => {
     db.all(`SELECT beats.*, users.username as seller_username
             FROM beats
-            JOIN users ON beats.seller_id = users.id`, [], (err, rows) => {
+                     JOIN users ON beats.seller_id = users.id`, [], (err, rows) => {
         if (err) {
             return next(ApiError.internal('Ошибка при получении списка аранжировок'));
         }
@@ -24,7 +24,7 @@ const getBeatById = (req, res, next) => {
     }
     db.get(`SELECT beats.*, users.username as seller_username, users.email as email
             FROM beats
-            JOIN users ON beats.seller_id = users.id
+                     JOIN users ON beats.seller_id = users.id
             WHERE beats.id = ?`, [beatId], (err, row) => {
         if (err) {
             return next(ApiError.internal('Ошибка при получении аранжировки'));
@@ -84,12 +84,8 @@ const updateBeat = async (req, res, next) => {
     }
 
     db.get('SELECT * FROM beats WHERE id = ?', [beatId], async (err, row) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка при проверке бита'));
-        }
-        if (!row) {
-            return next(ApiError.notFound('Бит не найден'));
-        }
+        if (err) return next(ApiError.internal('Ошибка при проверке бита'));
+        if (!row) return next(ApiError.notFound('Бит не найден'));
 
         // Проверка прав доступа
         if (currentUserRole !== 'admin' && row.seller_id !== currentUserId) {
@@ -105,8 +101,8 @@ const updateBeat = async (req, res, next) => {
                 const imageFilePath = path.join('/uploads/beats/images', req.files.image[0].filename);
                 const fullImagePath = path.join(__dirname, '..', imageFilePath);
                 deleteOldFile(photo_url);
-                photo_url = imageFilePath;
                 await cropToSquare(fullImagePath);
+                photo_url = imageFilePath;
             }
 
             if (req.files.audio) {
@@ -124,16 +120,33 @@ const updateBeat = async (req, res, next) => {
         const updatedAt = new Date().toISOString();
 
         db.run(
-            'UPDATE beats SET title = COALESCE(?, title), description = COALESCE(?, description), style = COALESCE(?, style), bpm = COALESCE(?, bpm), audio_url = COALESCE(?, audio_url), price = COALESCE(?, price), photo_url = COALESCE(?, photo_url), updated_at = ? WHERE id = ?',
-            [title, description, style, bpm, audio_url, price, photo_url, updatedAt, beatId],
+            `UPDATE beats 
+             SET 
+                 title = ?, 
+                 description = ?, 
+                 style = ?, 
+                 bpm = ?, 
+                 audio_url = ?, 
+                 price = ?, 
+                 photo_url = ?, 
+                 updated_at = ?
+             WHERE id = ?`,
+            [
+                title || row.title,
+                typeof description === 'string' ? description : row.description,
+                style || row.style,
+                bpm || row.bpm,
+                audio_url,
+                price || row.price,
+                photo_url,
+                updatedAt,
+                beatId
+            ],
             function (err) {
-                if (err) {
-                    return next(ApiError.internal('Ошибка при обновлении бита'));
-                }
-                if (this.changes === 0) {
-                    return next(ApiError.notFound('Бит не найден'));
-                }
-                res.status(200).json({ message: 'Бит успешно обновлен' });
+                if (err) return next(ApiError.internal('Ошибка при обновлении бита'));
+                if (this.changes === 0) return next(ApiError.notFound('Бит не найден'));
+
+                res.status(200).json({ message: 'Бит успешно обновлён' });
             }
         );
     });
