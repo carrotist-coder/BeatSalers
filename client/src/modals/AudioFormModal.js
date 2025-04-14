@@ -5,7 +5,7 @@ import DeleteAudioConfirmModal from './DeleteAudioConfirmModal';
 import { useNavigate } from 'react-router-dom';
 import { BEATS_ROUTE } from '../utils/consts';
 
-function AudioFormModal({ show, onHide, beat = null, onUpdated }) {
+function AudioFormModal({ show, onHide, beat = null, onUpdated, sellerUsername = null }) {
     const isEditMode = !!beat;
     const navigate = useNavigate();
 
@@ -65,6 +65,11 @@ function AudioFormModal({ show, onHide, beat = null, onUpdated }) {
         if (audioFile) formData.append('audio', audioFile);
         if (imageFile) formData.append('image', imageFile);
         if (removeImage) formData.append('removeImage', 'true');
+
+        if (sellerUsername) {
+            formData.append('sellerUsername', sellerUsername);
+        }
+
 
         try {
             if (isEditMode) {

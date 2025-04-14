@@ -38,8 +38,7 @@ const getBeatById = (req, res, next) => {
 
 // Добавить новый бит
 const addBeat = async (req, res, next) => {
-    const { title, description, style, bpm, price } = req.body;
-    const seller_id = req.user.id;
+    const { title, description, style, bpm, price, sellerUsername } = req.body;
     const createdAt = new Date().toISOString();
 
     let audio_url = null;
@@ -75,18 +74,37 @@ const addBeat = async (req, res, next) => {
         return next(ApiError.badRequest('Цена должна быть неотрицательной.'));
     }
 
-    db.run(
-        `INSERT INTO beats 
-         (title, description, style, bpm, audio_url, photo_url, price, seller_id, created_at, updated_at) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [title, description, style, bpm, audio_url, photo_url, price, seller_id, createdAt, createdAt],
-        function (err) {
-            if (err) {
-                return next(ApiError.internal('Ошибка при добавлении бита'));
+    // Логика определения seller_id
+    const publishBeat = (seller_id) => {
+        db.run(
+            `INSERT INTO beats 
+             (title, description, style, bpm, audio_url, photo_url, price, seller_id, created_at, updated_at) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [title, description, style, bpm, audio_url, photo_url, price, seller_id, createdAt, createdAt],
+            function (err) {
+                if (err) {
+                    return next(ApiError.internal('Ошибка при добавлении бита'));
+                }
+                res.status(201).json({ message: 'Бит успешно добавлен', beatId: this.lastID });
             }
-            res.status(201).json({ message: 'Бит успешно добавлен', beatId: this.lastID });
-        }
-    );
+        );
+    };
+
+    if (
+        req.user.role === 'admin' &&
+        sellerUsername &&
+        sellerUsername !== req.user.username
+    ) {
+        // Админ хочет опубликовать от имени другого пользователя
+        db.get('SELECT id FROM users WHERE username = ?', [sellerUsername], (err, row) => {
+            if (err) return next(ApiError.internal('Ошибка при поиске пользователя'));
+            if (!row) return next(ApiError.badRequest('Пользователь не найден'));
+            publishBeat(row.id);
+        });
+    } else {
+        // Обычный пользователь или админ публикует от своего имени
+        publishBeat(req.user.id);
+    }
 };
 
 // Удаление старых файлов

@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {Form, Container, Row, Col, Card, Button} from 'react-bootstrap';
 import AudioItem from './AudioItem';
 import { getAllBeats } from '../api';
 import { STYLES } from "../utils/consts";
 import AudioFormModal from "../modals/AudioFormModal";
+import {useLocation, useParams} from "react-router-dom";
+import {Context} from "../index";
 
 const AudioList = ({ beats: providedBeats }) => {
     const [beats, setBeats] = useState(providedBeats || []);
@@ -17,6 +19,21 @@ const AudioList = ({ beats: providedBeats }) => {
     const [sortOption, setSortOption] = useState('');
     const [currentAudio, setCurrentAudio] = useState(null);
     const [showCreateModal, setShowCreateModal] = useState(false);
+    const { user } = useContext(Context);
+    const location = useLocation();
+    const { username } = useParams(); // если на /profiles/:username
+    const isAdmin = user.isAuth && user.user.role === 'admin';
+    const isOwnProfile = user.isAuth && username === user.user.username;
+    const isOtherUserProfile = isAdmin && username && !isOwnProfile;
+    const isMainPage = location.pathname === '/' || location.pathname === '/beats';
+    const canAddBeat = isMainPage || isOwnProfile || isOtherUserProfile;
+
+    const getTargetUsername = () => {
+        if (isOtherUserProfile) {
+            return username; // чужой профиль, админ может публиковать за него
+        }
+        return null; // во всех остальных случаях — публикуем от себя
+    };
 
     useEffect(() => {
         if (!providedBeats) {
@@ -65,9 +82,15 @@ const AudioList = ({ beats: providedBeats }) => {
         <Container className="user-list">
             <div className="user-list__row">
                 <h3 className="list__title">Аранжировки:</h3>
-                <Button variant="success" className="user-list__btn" onClick={() => setShowCreateModal(true)}>
-                    Добавить аранжировку
-                </Button>
+                {canAddBeat && (
+                    <Button
+                        variant="success"
+                        className="user-list__btn"
+                        onClick={() => setShowCreateModal(true)}
+                    >
+                        Добавить аранжировку
+                    </Button>
+                )}
             </div>
             <Card className="p-4 mb-4 search-bar">
                 <Form>
@@ -221,6 +244,7 @@ const AudioList = ({ beats: providedBeats }) => {
                         getAllBeats().then(setBeats);
                     }
                 }}
+                sellerUsername={getTargetUsername()}
             />
         </Container>
     );
