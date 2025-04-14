@@ -5,7 +5,7 @@ import DeleteAudioConfirmModal from './DeleteAudioConfirmModal';
 import { useNavigate } from 'react-router-dom';
 import { BEATS_ROUTE } from '../utils/consts';
 
-function AudioFormModal({ show, onHide, beat = null, onUpdated, sellerUsername = null }) {
+function AudioFormModal({ show, onHide, beat = null, onUpdated, onAdded, sellerUsername = null }) {
     const isEditMode = !!beat;
     const navigate = useNavigate();
 
@@ -77,7 +77,8 @@ function AudioFormModal({ show, onHide, beat = null, onUpdated, sellerUsername =
             } else {
                 await createBeat(formData);
             }
-            onUpdated?.();
+            onUpdated?.(); // для обновления списка
+            onAdded?.();   // для перезагрузки страницы
             onHide();
         } catch (error) {
             setErrorMessage(error.response?.data?.message || 'Ошибка сохранения');

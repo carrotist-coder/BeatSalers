@@ -78,6 +78,10 @@ const AudioList = ({ beats: providedBeats }) => {
             return 0;
         });
 
+    const handleBeatAdded = () => {
+        window.location.reload();
+    };
+
     return (
         <Container className="user-list">
             <div className="user-list__row">
@@ -244,6 +248,7 @@ const AudioList = ({ beats: providedBeats }) => {
                         getAllBeats().then(setBeats);
                     }
                 }}
+                onAdded={handleBeatAdded}
                 sellerUsername={getTargetUsername()}
             />
         </Container>
