@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import {Modal, Form, Button, Col, Row} from 'react-bootstrap';
+import { Modal, Form, Button, Col, Row } from 'react-bootstrap';
+import {updateBeat} from "../api";
 
 function AudioEditModal({ show, onHide, beat, onUpdated }) {
     const [title, setTitle] = useState(beat.title);
@@ -29,6 +30,7 @@ function AudioEditModal({ show, onHide, beat, onUpdated }) {
         if (removeImage) formData.append('removeImage', 'true');
 
         try {
+            await updateBeat(beat.id, formData);
             onUpdated();
             onHide();
         } catch (error) {
@@ -71,18 +73,33 @@ function AudioEditModal({ show, onHide, beat, onUpdated }) {
                             </Form.Group>
                         </Col>
                     </Row>
-
                     <Form.Group className="mb-3">
                         <Form.Label>Аудиофайл</Form.Label>
                         <Form.Control type="file" accept="audio/*" onChange={(e) => setAudioFile(e.target.files[0])} />
                     </Form.Group>
                     <Form.Group className="mb-3">
                         <Form.Label>Обложка</Form.Label>
-                        <Form.Control type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files[0])} />
+                        <Form.Control
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                                setImageFile(e.target.files[0]);
+                                setRemoveImage(false);
+                            }}
+                        />
                         {beat.photo_url && !removeImage && (
-                            <Button variant="link" onClick={() => setRemoveImage(true)}>
+                            <Button
+                                variant="link"
+                                onClick={() => setRemoveImage(true)}
+                                className="mt-2"
+                            >
                                 Удалить текущую обложку
                             </Button>
+                        )}
+                        {removeImage && (
+                            <div className="mt-2" style={{ color: 'red' }}>
+                                Обложка будет удалена после сохранения
+                            </div>
                         )}
                     </Form.Group>
                     {errorMessage && <div className="text-danger">{errorMessage}</div>}

@@ -1,5 +1,8 @@
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
+const path = require('path');
+const fs = require('fs');
+const {cropToSquare} = require("../utils/imageHelpers");
 
 // Получить все биты (доступно всем)
 const getAllBeats = (req, res, next) => {
@@ -59,10 +62,20 @@ const addBeat = async (req, res, next) => {
     );
 };
 
-// Обновить бит (только владелец или админ)
+// Удаление старых файлов
+const deleteOldFile = (filePath) => {
+    if (filePath) {
+        const fullPath = path.join(__dirname, '..', filePath);
+        if (fs.existsSync(fullPath)) {
+            fs.unlinkSync(fullPath);
+        }
+    }
+};
+
+// Обновление бита
 const updateBeat = async (req, res, next) => {
     const beatId = parseInt(req.params.id, 10);
-    const { title, description, style, bpm, audio_url, price } = req.body;
+    const { title, description, style, bpm, price, removeImage } = req.body;
     const currentUserId = req.user.id;
     const currentUserRole = req.user.role;
 
@@ -70,7 +83,7 @@ const updateBeat = async (req, res, next) => {
         return next(ApiError.badRequest('ID бита обязателен'));
     }
 
-    db.get('SELECT * FROM beats WHERE id = ?', [beatId], (err, row) => {
+    db.get('SELECT * FROM beats WHERE id = ?', [beatId], async (err, row) => {
         if (err) {
             return next(ApiError.internal('Ошибка при проверке бита'));
         }
@@ -83,11 +96,36 @@ const updateBeat = async (req, res, next) => {
             return next(ApiError.forbidden('Вы можете обновить только свои биты.'));
         }
 
+        let audio_url = row.audio_url;
+        let photo_url = row.photo_url;
+
+        // Обработка загруженных файлов
+        if (req.files) {
+            if (req.files.image) {
+                const imageFilePath = path.join('/uploads/beats/images', req.files.image[0].filename);
+                const fullImagePath = path.join(__dirname, '..', imageFilePath);
+                deleteOldFile(photo_url);
+                photo_url = imageFilePath;
+                await cropToSquare(fullImagePath);
+            }
+
+            if (req.files.audio) {
+                const audioFilePath = path.join('/uploads/beats/audio', req.files.audio[0].filename);
+                deleteOldFile(audio_url);
+                audio_url = audioFilePath;
+            }
+        }
+
+        if (removeImage === 'true') {
+            deleteOldFile(photo_url);
+            photo_url = null;
+        }
+
         const updatedAt = new Date().toISOString();
 
         db.run(
-            'UPDATE beats SET title = COALESCE(?, title), description = COALESCE(?, description), style = COALESCE(?, style), bpm = COALESCE(?, bpm), audio_url = COALESCE(?, audio_url), price = COALESCE(?, price), updated_at = ? WHERE id = ?',
-            [title, description, style, bpm, audio_url, price, updatedAt, beatId],
+            'UPDATE beats SET title = COALESCE(?, title), description = COALESCE(?, description), style = COALESCE(?, style), bpm = COALESCE(?, bpm), audio_url = COALESCE(?, audio_url), price = COALESCE(?, price), photo_url = COALESCE(?, photo_url), updated_at = ? WHERE id = ?',
+            [title, description, style, bpm, audio_url, price, photo_url, updatedAt, beatId],
             function (err) {
                 if (err) {
                     return next(ApiError.internal('Ошибка при обновлении бита'));

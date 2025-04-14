@@ -62,7 +62,9 @@ function AudioPage() {
         return <div>Произошла ошибка</div>;
     }
 
-    const photoUrl = beat.photo_url ? baseURL + beat.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_BEAT_IMAGE_FILENAME;
+    const photoUrl = beat.photo_url
+        ? baseURL + beat.photo_url
+        : baseURL + DEFAULT_PATH + '/' + DEFAULT_BEAT_IMAGE_FILENAME;
     const audioUrl = baseURL + beat.audio_url;
     const emailHref = `mailto:${beat.email}?subject=Покупка%20аранжировки%20"${beat.title}"&body=Я%20хотел%20бы%20купить%20эту%20аранжировку:%20"${beat.title}".`;
 

@@ -107,3 +107,30 @@ export const deleteUser = async (password, userId = null) => {
         throw error;
     }
 };
+
+export const updateBeat = async (beatId, beatData) => {
+    try {
+        const response = await axios.put(
+            `${baseURL}/beats/${beatId}`,
+            beatData,
+            getHeaders()
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка обновления аранжировки:', error);
+        throw error;
+    }
+};
+
+export const deleteBeat = async (beatId) => {
+    try {
+        const response = await axios.delete(
+            `${baseURL}/beats/${beatId}`,
+            getHeaders()
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Ошибка при удалении аранжировки:', error);
+        throw error;
+    }
+};
