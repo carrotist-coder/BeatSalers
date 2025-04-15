@@ -1,6 +1,7 @@
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
 const bcrypt = require("bcrypt");
+const {validateEmail} = require("../utils/helpers");
 
 // Получить всех пользователей
 const getUsers = (req, res, next) => {
@@ -121,6 +122,11 @@ const addUser = async (req, res, next) => {
         return next(ApiError.badRequest('Пароль должен быть длиной не менее 6 символов.'));
     }
 
+    // Проверяем валидность email
+    if (!validateEmail(email)) {
+        return next(ApiError.badRequest('Некорректный формат email.'));
+    }
+
     if (!['user', 'admin'].includes(role)) {
         return next(ApiError.badRequest('Неверная роль пользователя. Доступные роли: "user" или "admin".'));
     }
@@ -213,6 +219,11 @@ const updateUser = async (req, res, next) => {
         }
 
         hashedPassword = await bcrypt.hash(password, 5);
+    }
+
+    // Проверяем валидность email
+    if (!validateEmail(email)) {
+        return next(ApiError.badRequest('Некорректный формат email.'));
     }
 
     const updatedAt = new Date().toISOString();

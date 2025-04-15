@@ -2,12 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
-
-// Функция для проверки валидности email
-const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-};
+const {validateEmail} = require("../utils/helpers");
 
 // Метод для аутентификации пользователя (получение токена)
 const login = async (req, res, next) => {
