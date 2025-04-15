@@ -75,6 +75,10 @@ const register = async (req, res, next) => {
         return next(ApiError.badRequest('Все поля обязательны для заполнения.'));
     }
 
+    if (password.length < 6) {
+        return next(ApiError.badRequest('Пароль должен быть длиной не менее 6 символов.'));
+    }
+
     if (!['user', 'admin'].includes(role)) {
         return next(ApiError.badRequest('Неверная роль пользователя. Доступные роли: "user" или "admin".'));
     }
