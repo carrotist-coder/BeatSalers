@@ -220,10 +220,12 @@ const updateUser = async (req, res, next) => {
             });
         });
 
-        // Проверяем старый пароль
-        const passwordMatch = await bcrypt.compare(oldPassword, user.password);
-        if (!passwordMatch) {
-            return next(ApiError.badRequest('Неверный старый пароль'));
+        // Только если НЕ админ — проверяем старый пароль
+        if (currentUserRole !== 'admin') {
+            const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!passwordMatch) {
+                return next(ApiError.badRequest('Неверный старый пароль'));
+            }
         }
 
         hashedPassword = await bcrypt.hash(password, 5);

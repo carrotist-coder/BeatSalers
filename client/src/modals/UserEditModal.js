@@ -36,19 +36,20 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
             setErrorMessage('Email не должен быть пустым');
             return;
         }
+        const isAdminEditing = userStore.user.role === 'admin' && !isCurrentUser;
         if (newPassword) {
             if (newPassword !== confirmPassword) {
                 setErrorMessage('Пароли не совпадают');
                 return;
             }
-            if (!oldPassword) {
+            const isEditingOwnPasswordAsAdmin = userStore.user.role === 'admin' && isCurrentUser;
+            if (!oldPassword && !isAdminEditing && !isEditingOwnPasswordAsAdmin) {
                 setErrorMessage('Введите старый пароль для подтверждения');
                 return;
             }
         }
-        try {
-            const isAdminEditing = userStore.user.role === 'admin' && !isCurrentUser;
 
+        try {
             // Добавляем проверку изменения роли
             const originalIsAdmin = originalUser.role === 'admin';
             const roleChanged = isAdmin !== originalIsAdmin;
