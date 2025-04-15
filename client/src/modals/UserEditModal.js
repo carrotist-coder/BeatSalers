@@ -60,13 +60,19 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
                 newPassword ||
                 roleChanged
             ) {
-                await updateUser(originalUser.id, {
+                const updateData = {
                     username,
                     email,
-                    password: newPassword || undefined,
-                    oldPassword,
-                    role: isAdmin ? 'admin' : 'user',
-                });
+                };
+                if (newPassword) {
+                    updateData.password = newPassword;
+                    updateData.oldPassword = oldPassword;
+                }
+                // Только если админ хочет изменить роль
+                if (isAdminEditing && isAdmin !== (originalUser.role === 'admin')) {
+                    updateData.role = isAdmin ? 'admin' : 'user';
+                }
+                await updateUser(originalUser.id, updateData);
             }
 
             // Обновление данных профиля (имя, био, соцсети, фото)

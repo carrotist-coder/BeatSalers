@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
-const {validateEmail} = require("../utils/helpers");
+const {validateEmail, validateUsername} = require("../utils/helpers");
 
 // Метод для аутентификации пользователя (получение токена)
 const login = async (req, res, next) => {
@@ -68,6 +68,10 @@ const register = async (req, res, next) => {
 
     if (!username || !password || !email || !role) {
         return next(ApiError.badRequest('Все поля обязательны для заполнения.'));
+    }
+
+    if (!validateUsername(username)) {
+        return next(ApiError.badRequest('Имя пользователя должно начинаться с буквы и содержать только латинские буквы, цифры и символ "_".'));
     }
 
     if (password.length < 6) {

@@ -1,7 +1,7 @@
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
 const bcrypt = require("bcrypt");
-const {validateEmail} = require("../utils/helpers");
+const {validateEmail, validateUsername} = require("../utils/helpers");
 
 // Получить всех пользователей
 const getUsers = (req, res, next) => {
@@ -118,6 +118,10 @@ const addUser = async (req, res, next) => {
         return next(ApiError.badRequest('Все поля обязательны для заполнения.'));
     }
 
+    if (!validateUsername(username)) {
+        return next(ApiError.badRequest('Имя пользователя должно начинаться с буквы и содержать только латинские буквы, цифры и символ "_".'));
+    }
+
     if (password.length < 6) {
         return next(ApiError.badRequest('Пароль должен быть длиной не менее 6 символов.'));
     }
@@ -176,6 +180,10 @@ const updateUser = async (req, res, next) => {
     // Проверка наличия ID
     if (!userId) {
         return next(ApiError.badRequest('ID пользователя обязателен'));
+    }
+
+    if (!validateUsername(username)) {
+        return next(ApiError.badRequest('Имя пользователя должно начинаться с буквы и содержать только латинские буквы, цифры и символ "_".'));
     }
 
     const isSelf = userId === currentUserId;
