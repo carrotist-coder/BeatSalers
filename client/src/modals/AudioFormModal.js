@@ -3,7 +3,7 @@ import { Modal, Form, Button, Col, Row } from 'react-bootstrap';
 import { createBeat, updateBeat } from '../api';
 import DeleteAudioConfirmModal from './DeleteAudioConfirmModal';
 import { useNavigate } from 'react-router-dom';
-import { BEATS_ROUTE } from '../utils/consts';
+import {BEATS_ROUTE, STYLES} from '../utils/consts';
 
 function AudioFormModal({ show, onHide, beat = null, onUpdated, onAdded, sellerUsername = null }) {
     const isEditMode = !!beat;
@@ -112,7 +112,16 @@ function AudioFormModal({ show, onHide, beat = null, onUpdated, onAdded, sellerU
                             <Col>
                                 <Form.Group>
                                     <Form.Label>Стиль</Form.Label>
-                                    <Form.Control value={style} onChange={(e) => setStyle(e.target.value)} />
+                                    <Form.Control
+                                        as="select"
+                                        value={style}
+                                        onChange={(e) => setStyle(e.target.value)}
+                                    >
+                                        <option value="" disabled={true}>Выберите стиль...</option>
+                                        {STYLES.map((style, index) => (
+                                            <option key={index} value={style}>{style}</option>
+                                        ))}
+                                    </Form.Control>
                                 </Form.Group>
                             </Col>
                             <Col>
