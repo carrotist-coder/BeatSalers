@@ -86,7 +86,7 @@ const AudioList = ({ beats: providedBeats }) => {
         <Container className="user-list">
             <div className="user-list__row">
                 <h3 className="list__title">Аранжировки:</h3>
-                {canAddBeat && (
+                {user.isAuth && canAddBeat && (
                     <Button
                         variant="success"
                         className="user-list__btn"
