@@ -10,7 +10,8 @@ import {
     AUTH_ROUTE,
     USERS_ROUTE,
     BEATS_ROUTE,
-    MY_PROFILE_ROUTE
+    MY_PROFILE_ROUTE,
+    ABOUT_ROUTE
 } from "../utils/consts";
 
 const NavBar = observer(() => {
@@ -31,6 +32,12 @@ const NavBar = observer(() => {
                 <Nav className="ml-auto align-items-center" style={{ color: 'white' }}>
                     <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={BEATS_ROUTE}>Аранжировки</NavLink>
                     <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={USERS_ROUTE}>Музыканты</NavLink>
+                    <NavLink
+                        style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }}
+                        to={ABOUT_ROUTE}
+                    >
+                        О колледже
+                    </NavLink>
                     {user.isAuth ? (
                         <>
                             <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={MY_PROFILE_ROUTE}>Профиль</NavLink>

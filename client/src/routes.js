@@ -5,9 +5,10 @@ import AudioList from "./components/AudioList";
 import AudioPage from "./pages/AudioPage";
 import UserPage from "./pages/UserPage";
 import NotFoundPage from "./pages/NotFoundPage";
+import About from "./pages/About";
 
 import {
-    MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE, MY_PROFILE_ROUTE
+    MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE, MY_PROFILE_ROUTE, ABOUT_ROUTE
 } from "./utils/consts";
 
 // Защищенные маршруты (требуется авторизация)
@@ -43,6 +44,10 @@ export const publicRoutes = [
     {
         path: PROFILE_ROUTE,
         Component: UserPage // Страница с конкретным пользователем
+    },
+    {
+        path: ABOUT_ROUTE, // Страница о колледже
+        Component: About
     },
     {
         path: "*",
