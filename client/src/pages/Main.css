@@ -8,8 +8,11 @@ html, body {
     height: 100%;
     width: 100%;
     overflow-x: hidden;
-    background: url('../../public/media/background.jpg') no-repeat center center fixed;
-    background-size: cover;
+}
+
+.main-container {
+    min-height: 100vh;
+    transition: background-color 0.8s ease;
 }
 
 .content {
