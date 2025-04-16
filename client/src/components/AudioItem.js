@@ -1,7 +1,7 @@
 import React, {useRef} from "react";
 import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import "./UserStyles.css";
+import "./ListItemStyles.css";
 import {baseURL} from "../api";
 import {formatDate, truncateText} from "../utils/helpers";
 import {DEFAULT_BEAT_IMAGE_FILENAME, DEFAULT_PATH, TITLE_VISIBLE_MAX_LENGTH} from "../utils/consts";

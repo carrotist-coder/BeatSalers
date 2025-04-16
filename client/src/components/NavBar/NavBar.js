@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Context } from '../index.js';
+import { Context } from '../../index.js';
 import Navbar from 'react-bootstrap/Navbar';
 import { Button, Container, Nav } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
@@ -12,7 +12,7 @@ import {
     BEATS_ROUTE,
     MY_PROFILE_ROUTE,
     ABOUT_ROUTE
-} from "../utils/consts";
+} from "../../utils/consts";
 
 const NavBar = observer(() => {
     const { user } = useContext(Context);

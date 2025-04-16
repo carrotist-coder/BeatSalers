@@ -2,7 +2,7 @@ import React from 'react';
 import Carousel from 'react-bootstrap/Carousel';
 import { NavLink } from 'react-router-dom';
 import './Main.css';
-import { MAIN_CAROUSEL_DATA } from '../utils/consts';
+import { MAIN_CAROUSEL_DATA } from '../../utils/consts';
 
 const Main = () => {
     return (

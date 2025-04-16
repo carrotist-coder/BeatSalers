@@ -1,7 +1,7 @@
 import React from 'react';
 import './About.css';
 import { Container, Row, Col, Card } from 'react-bootstrap';
-import {ABOUT_CARDS_DATA} from "../utils/consts";
+import {ABOUT_CARDS_DATA} from "../../utils/consts";
 
 const About = () => {
     return (

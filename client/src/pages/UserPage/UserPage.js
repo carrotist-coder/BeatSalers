@@ -2,14 +2,14 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./UserPage.css";
-import { baseURL, getFullUserByUsername, getMyProfile } from '../api';
-import AudioList from "../components/AudioList";
-import {DEFAULT_AVATAR_IMAGE_FILENAME, DEFAULT_PATH, MAIN_ROUTE} from "../utils/consts";
-import NotFoundPage from "./NotFoundPage";
-import { Context } from "../index";
-import {formatDate, truncateText} from "../utils/helpers";
-import {getAverageColor, getTextColor} from "../utils/colorHelpers";
-import UserEditModal from "../modals/UserEditModal";
+import { baseURL, getFullUserByUsername, getMyProfile } from '../../api';
+import AudioList from "../../components/AudioList";
+import {DEFAULT_AVATAR_IMAGE_FILENAME, DEFAULT_PATH, MAIN_ROUTE} from "../../utils/consts";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
+import { Context } from "../../index";
+import {formatDate, truncateText} from "../../utils/helpers";
+import {getAverageColor, getTextColor} from "../../utils/colorHelpers";
+import UserEditModal from "../../modals/UserEditModal";
 
 function UserPage() {
     const navigate = useNavigate();

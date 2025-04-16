@@ -1,11 +1,11 @@
-import Main from './pages/Main';
+import Main from './pages/Main/Main';
 import Auth from './pages/Auth';
 import UserList from "./components/UserList";
 import AudioList from "./components/AudioList";
-import AudioPage from "./pages/AudioPage";
-import UserPage from "./pages/UserPage";
-import NotFoundPage from "./pages/NotFoundPage";
-import About from "./pages/About";
+import AudioPage from "./pages/AudioPage/AudioPage";
+import UserPage from "./pages/UserPage/UserPage";
+import NotFoundPage from "./pages/NotFoundPage/NotFoundPage";
+import About from "./pages/About/About";
 
 import {
     MAIN_ROUTE, AUTH_ROUTE, USERS_ROUTE, BEATS_ROUTE, BEAT_DETAILS_ROUTE, PROFILE_ROUTE, MY_PROFILE_ROUTE, ABOUT_ROUTE

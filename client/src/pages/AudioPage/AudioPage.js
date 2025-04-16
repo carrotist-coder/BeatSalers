@@ -2,13 +2,13 @@ import React, {useState, useEffect, useContext} from 'react';
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import "./AudioPage.css";
-import {baseURL, getBeatById} from '../api';
-import {BEATS_ROUTE, DEFAULT_BEAT_IMAGE_FILENAME, DEFAULT_PATH} from "../utils/consts";
-import NotFoundPage from "./NotFoundPage";
-import {formatDate, truncateText} from "../utils/helpers";
-import {getAverageColor, getTextColor} from '../utils/colorHelpers';
-import {Context} from "../index";
-import AudioFormModal from "../modals/AudioFormModal";
+import {baseURL, getBeatById} from '../../api';
+import {BEATS_ROUTE, DEFAULT_BEAT_IMAGE_FILENAME, DEFAULT_PATH} from "../../utils/consts";
+import NotFoundPage from "../NotFoundPage/NotFoundPage";
+import {formatDate, truncateText} from "../../utils/helpers";
+import {getAverageColor, getTextColor} from '../../utils/colorHelpers';
+import {Context} from "../../index";
+import AudioFormModal from "../../modals/AudioFormModal";
 
 function AudioPage() {
     const navigate = useNavigate();

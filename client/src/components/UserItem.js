@@ -2,7 +2,7 @@ import React from "react";
 import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { baseURL } from '../api';
-import "./UserStyles.css";
+import "./ListItemStyles.css";
 import {truncateText} from "../utils/helpers";
 import {
     DEFAULT_AVATAR_IMAGE_FILENAME,
