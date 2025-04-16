@@ -33,6 +33,7 @@ const UserList = () => {
             if (sortOption === 'nameDesc') return b.name.localeCompare(a.name);
             if (sortOption === 'beatsAsc') return a.beat_count - b.beat_count;
             if (sortOption === 'beatsDesc') return b.beat_count - a.beat_count;
+            if (sortOption === 'roleAdmin') return a.role === 'admin' ? -1 : b.role === 'admin' ? 1 : 0;
             return 0;
         });
 
@@ -98,6 +99,7 @@ const UserList = () => {
                                     <option value="nameDesc">Z-A</option>
                                     <option value="beatsAsc">Аранжировки ↑</option>
                                     <option value="beatsDesc">Аранжировки ↓</option>
+                                    <option value="roleAdmin">Админы</option>
                                 </Form.Control>
                             </Form.Group>
                         </Col>
