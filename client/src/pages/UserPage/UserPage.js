@@ -10,6 +10,7 @@ import { Context } from "../../index";
 import {formatDate, truncateText} from "../../utils/helpers";
 import {getAverageColor, getTextColor} from "../../utils/colorHelpers";
 import UserEditModal from "../../modals/UserEditModal";
+import Footer from "../../components/Footer/Footer";
 
 function UserPage() {
     const navigate = useNavigate();
@@ -152,6 +153,7 @@ function UserPage() {
                 <div className="audio-list-container">
                     <AudioList beats={user.beats}/>
                 </div>
+                <Footer />
             </div>
             <UserEditModal
                 show={isEditModalOpen}
