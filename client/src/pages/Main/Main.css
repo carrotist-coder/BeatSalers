@@ -46,6 +46,11 @@ html, body {
     width: 100%;
     object-fit: cover;
     filter: brightness(0.5);
+    transition: filter 0.3s ease;
+}
+
+.carousel-img:hover {
+    filter: brightness(0.6);
 }
 
 .carousel-caption h5,

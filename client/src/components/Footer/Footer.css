@@ -74,6 +74,12 @@
     }
 
     .footer-container {
-        gap: 1.5rem;
+        padding: 0 15px;
+    }
+
+    .footer-top,
+    .footer-bottom {
+        text-align: center;
+        align-items: center;
     }
 }
