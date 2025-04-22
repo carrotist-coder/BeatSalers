@@ -10,10 +10,6 @@ html, body {
     overflow-x: hidden;
 }
 
-.main-container {
-    min-height: 100vh;
-}
-
 .content {
     width: 100%;
     padding: 40px 20px 0;
@@ -58,3 +54,20 @@ html, body {
     color: white;
 }
 
+@media (max-width: 768px) {
+    .title {
+        font-size: 2rem;
+    }
+
+    .carousel-img {
+        height: 300px;
+    }
+
+    .main-container {
+        overflow: hidden;
+    }
+
+    .content {
+        padding: 30px 10px 0;
+    }
+}

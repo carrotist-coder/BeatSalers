@@ -26,27 +26,27 @@ const NavBar = observer(() => {
     }
 
     return (
-        <Navbar bg="dark" variant="dark" className="navbar-fixed">
+        <Navbar bg="dark" variant="dark" expand="lg" className="navbar-fixed">
             <Container>
-                <NavLink style={{ color: 'white', textDecoration: 'none' }} to={MAIN_ROUTE}>БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ</NavLink>
-                <Nav className="ml-auto align-items-center" style={{ color: 'white' }}>
-                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={BEATS_ROUTE}>Аранжировки</NavLink>
-                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={USERS_ROUTE}>Музыканты</NavLink>
-                    <NavLink
-                        style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }}
-                        to={ABOUT_ROUTE}
-                    >
-                        О колледже
-                    </NavLink>
-                    {user.isAuth ? (
-                        <>
-                            <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={MY_PROFILE_ROUTE}>Профиль</NavLink>
-                            <Button variant={"outline-light"} onClick={logOut}>Выйти</Button>
-                        </>
-                    ) : (
-                        <Button variant={"outline-light"} onClick={() => navigate(AUTH_ROUTE)}>Авторизация</Button>
-                    )}
-                </Nav>
+                <Navbar.Brand as={NavLink} to={MAIN_ROUTE} style={{ color: 'white', textDecoration: 'none' }}>
+                    БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="ms-auto align-items-center" style={{ color: 'white' }}>
+                        <NavLink className="nav-link-custom" to={BEATS_ROUTE}>Аранжировки</NavLink>
+                        <NavLink className="nav-link-custom" to={USERS_ROUTE}>Музыканты</NavLink>
+                        <NavLink className="nav-link-custom" to={ABOUT_ROUTE}>О колледже</NavLink>
+                        {user.isAuth ? (
+                            <>
+                                <NavLink className="nav-link-custom" to={MY_PROFILE_ROUTE}>Профиль</NavLink>
+                                <Button variant={"outline-light"} onClick={logOut}>Выйти</Button>
+                            </>
+                        ) : (
+                            <Button variant={"outline-light"} onClick={() => navigate(AUTH_ROUTE)}>Авторизация</Button>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );
