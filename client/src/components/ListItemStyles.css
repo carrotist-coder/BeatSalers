@@ -122,12 +122,6 @@
     font-size: 0.95rem;
 }
 
-.user-item .card-footer {
-    font-size: 0.9rem;
-    background-color: transparent;
-    border-top: none;
-}
-
 @media (max-width: 1200px) {
     .user-item {
         flex-basis: calc(25% - 16px);
