@@ -52,10 +52,15 @@ const NavBar = observer(() => {
             className="navbar-fixed"
         >
         <Container>
-                <Navbar.Brand as={NavLink} to={MAIN_ROUTE} style={{ color: 'white', textDecoration: 'none' }} onClick={() => setExpanded(false)}>
-                    БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ
-                </Navbar.Brand>
-                <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Brand
+                as={NavLink}
+                to={MAIN_ROUTE}
+                className="brand-title"
+                onClick={() => setExpanded(false)}
+            >
+                БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ
+            </Navbar.Brand>
+            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="ms-auto align-items-center" style={{ color: 'white' }}>
                         <NavLink className="nav-link-custom" to={BEATS_ROUTE} onClick={() => setExpanded(false)}>Аранжировки</NavLink>
