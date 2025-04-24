@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import { Context } from '../../index.js';
 import Navbar from 'react-bootstrap/Navbar';
 import { Button, Container, Nav } from "react-bootstrap";
@@ -17,6 +17,22 @@ import {
 const NavBar = observer(() => {
     const { user } = useContext(Context);
     const navigate = useNavigate();
+    const [expanded, setExpanded] = useState(false);
+    const navbarRef = useRef();
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+                setExpanded(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
 
     const logOut = () => {
         localStorage.removeItem('token');
@@ -26,24 +42,38 @@ const NavBar = observer(() => {
     }
 
     return (
-        <Navbar bg="dark" variant="dark" expand="lg" className="navbar-fixed">
-            <Container>
-                <Navbar.Brand as={NavLink} to={MAIN_ROUTE} style={{ color: 'white', textDecoration: 'none' }}>
+        <Navbar
+            ref={navbarRef}
+            bg="dark"
+            variant="dark"
+            expand="lg"
+            expanded={expanded}
+            onToggle={() => setExpanded(!expanded)}
+            className="navbar-fixed"
+        >
+        <Container>
+                <Navbar.Brand as={NavLink} to={MAIN_ROUTE} style={{ color: 'white', textDecoration: 'none' }} onClick={() => setExpanded(false)}>
                     БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="ms-auto align-items-center" style={{ color: 'white' }}>
-                        <NavLink className="nav-link-custom" to={BEATS_ROUTE}>Аранжировки</NavLink>
-                        <NavLink className="nav-link-custom" to={USERS_ROUTE}>Музыканты</NavLink>
-                        <NavLink className="nav-link-custom" to={ABOUT_ROUTE}>О колледже</NavLink>
+                        <NavLink className="nav-link-custom" to={BEATS_ROUTE} onClick={() => setExpanded(false)}>Аранжировки</NavLink>
+                        <NavLink className="nav-link-custom" to={USERS_ROUTE} onClick={() => setExpanded(false)}>Музыканты</NavLink>
+                        <NavLink className="nav-link-custom" to={ABOUT_ROUTE} onClick={() => setExpanded(false)}>О колледже</NavLink>
                         {user.isAuth ? (
                             <>
-                                <NavLink className="nav-link-custom" to={MY_PROFILE_ROUTE}>Профиль</NavLink>
-                                <Button variant={"outline-light"} onClick={logOut}>Выйти</Button>
+                                <NavLink className="nav-link-custom" to={MY_PROFILE_ROUTE} onClick={() => setExpanded(false)}>Профиль</NavLink>
+                                <Button variant={"outline-light"} onClick={() => {
+                                    logOut();
+                                    setExpanded(false);
+                                }}>Выйти</Button>
                             </>
                         ) : (
-                            <Button variant={"outline-light"} onClick={() => navigate(AUTH_ROUTE)}>Авторизация</Button>
+                            <Button variant={"outline-light"} onClick={() => {
+                                setExpanded(false)
+                                navigate(AUTH_ROUTE)
+                            }}>Авторизация</Button>
                         )}
                     </Nav>
                 </Navbar.Collapse>
