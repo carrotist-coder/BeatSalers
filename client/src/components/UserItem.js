@@ -21,10 +21,10 @@ function UserItem({ user }) {
 
     return (
         <CardGroup className="user-item" onClick={handleCardClick}>
-            <Card style={{ cursor: "pointer" }}>
-                <Card.Img variant="top" src={photoUrl} />
-                <Card.Body>
-                    <Card.Title>
+            <Card style={{ cursor: "pointer" }} className="h-100 d-flex flex-column">
+            <Card.Img variant="top" src={photoUrl} />
+                <Card.Body className="flex-grow-1">
+                <Card.Title>
                         {truncateText(user.name, NAME_VISIBLE_MAX_LENGTH)}
                         {user.role === 'admin' && (
                             <img

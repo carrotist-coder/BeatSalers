@@ -43,7 +43,7 @@ const UserList = () => {
             <Card className="p-4 mb-4 search-bar">
                 <Form>
                     <Row className="gy-3">
-                        <Col md={4}>
+                        <Col xs={12} md={4}>
                             <Form.Group controlId="searchQuery">
                                 <Form.Label>Автор</Form.Label>
                                 <Form.Control
@@ -54,7 +54,7 @@ const UserList = () => {
                                 />
                             </Form.Group>
                         </Col>
-                        <Col md={2}>
+                        <Col xs={12} md={2}>
                             <Form.Group controlId="minBeats">
                                 <Form.Label>Мин. аранжировок</Form.Label>
                                 <Form.Control
@@ -70,7 +70,7 @@ const UserList = () => {
                                 />
                             </Form.Group>
                         </Col>
-                        <Col md={2}>
+                        <Col xs={12} md={2}>
                             <Form.Group controlId="maxBeats">
                                 <Form.Label>Макс. аранжировок</Form.Label>
                                 <Form.Control
@@ -86,7 +86,7 @@ const UserList = () => {
                                 />
                             </Form.Group>
                         </Col>
-                        <Col md={4}>
+                        <Col xs={12} md={4}>
                             <Form.Group controlId="sortOption">
                                 <Form.Label>Сортировка</Form.Label>
                                 <Form.Control
