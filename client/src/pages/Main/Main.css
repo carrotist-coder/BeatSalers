@@ -10,8 +10,14 @@ html, body {
     overflow-x: hidden;
 }
 
+.app-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
 .content {
-    width: 100%;
+    flex: 1;
     padding: 40px 20px 0;
 }
 
@@ -57,7 +63,7 @@ html, body {
 
 @media (max-width: 768px) {
     .carousel-img {
-        height: 300px;
+        height: 70vh;
     }
 
     .main-container {

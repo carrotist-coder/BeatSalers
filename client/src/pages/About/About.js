@@ -13,8 +13,8 @@ const About = () => {
                     Здесь обучаются будущие композиторы, исполнители и аранжировщики. Наши преподаватели —
                     признанные мастера своего дела, а выпускники — участники престижных конкурсов и фестивалей.
                 </p>
-                <Row className="about-row">
-                    {ABOUT_CARDS_DATA.map(card => (
+                <Row className="about-row g-4">
+                {ABOUT_CARDS_DATA.map(card => (
                         <Col md={4}>
                             <Card className="about-card h-100">
                                 <Card.Img variant="top" src={card.imageUrl} />
