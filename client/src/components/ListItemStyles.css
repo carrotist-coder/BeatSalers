@@ -127,6 +127,11 @@
         flex-basis: calc(25% - 16px);
         max-width: calc(25% - 16px);
     }
+
+    .audio-item {
+        flex-basis: calc(33.33% - 16px);
+        max-width: calc(33.33% - 16px);
+    }
 }
 
 @media (max-width: 992px) {
@@ -134,12 +139,49 @@
         flex-basis: calc(33.33% - 16px);
         max-width: calc(33.33% - 16px);
     }
+
+    .audio-item {
+        flex-basis: calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
 }
 
 @media (max-width: 768px) {
     .user-item {
         flex-basis: calc(50% - 16px);
         max-width: calc(50% - 16px);
+    }
+
+    .user-list__row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-list__btn {
+        position: static;
+        margin-top: 8px;
+        width: 80%;
+    }
+
+    .audio-item {
+        flex-basis: calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
+
+    .audio-item .card-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1rem;
+    }
+
+    .audio-item .card-text,
+    .additional-info {
+        font-size: 0.8rem;
+    }
+
+    .price-tag {
+        font-size: 1.2rem;
     }
 }
 
@@ -151,5 +193,10 @@
     .user-item {
         flex-basis: calc(50% - 16px);
         max-width: calc(50% - 16px);
+    }
+
+    .audio-item {
+        flex-basis: 100%;
+        max-width: 100%;
     }
 }
