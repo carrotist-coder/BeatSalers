@@ -10,7 +10,6 @@ import { Context } from "../../index";
 import {formatDate, truncateText} from "../../utils/helpers";
 import {getAverageColor, getTextColor} from "../../utils/colorHelpers";
 import UserEditModal from "../../modals/UserEditModal";
-import Footer from "../../components/Footer/Footer";
 
 function UserPage() {
     const navigate = useNavigate();
@@ -116,18 +115,18 @@ function UserPage() {
                                     <Card.Text className="user-page__description">
                                         <strong>Описание: </strong><br/> {truncateText(user.profile.bio, 0)}
                                     </Card.Text>
-                                    <div><strong>Создан: </strong>{formatDate(user.user.created_at)}</div>
-                                    <div className="user-page__additional-text"><strong>Изменён: </strong>{formatDate(user.user.updated_at)}</div>
+                                    <div className="user-page__additional-text"><strong>Создан: </strong>{formatDate(user.user.created_at)}</div>
+                                    <div className="user-page__additional-text user-page__additional-text--last"><strong>Изменён: </strong>{formatDate(user.user.updated_at)}</div>
                                     <div className="user-page__button-section">
                                         <Button
-                                            className="user-page__button"
+                                            className="user-page__button user-page__button--back"
                                             variant="danger"
                                             onClick={() => navigate(MAIN_ROUTE)}
                                         >
                                             Назад
                                         </Button>
                                         <Button
-                                            className="user-page__button"
+                                            className="user-page__button user-page__button--social"
                                             variant={user.profile.social_media_link ? "primary" : "secondary"}
                                             href={user.profile.social_media_link}
                                             target="_blank"
@@ -137,7 +136,7 @@ function UserPage() {
                                         </Button>
                                         { (userStore.isAuth && (isCurrentUser || userStore.user.role === 'admin')) && (
                                             <Button
-                                                className="user-page__button"
+                                                className="user-page__button user-page__button--edit"
                                                 variant="warning"
                                                 onClick={handleEditClick}
                                             >
@@ -153,7 +152,6 @@ function UserPage() {
                 <div className="audio-list-container">
                     <AudioList beats={user.beats}/>
                 </div>
-                <Footer />
             </div>
             <UserEditModal
                 show={isEditModalOpen}
