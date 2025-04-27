@@ -75,3 +75,6 @@ export const MAIN_CAROUSEL_DATA = [
         alt: 'Музыканты'
     }
 ];
+
+export const OFFICIAL_COLLEGE_LINK = 'https://mus.brest.by/ru/';
+export const GITHUB_AUTHOR_LINK = 'https://github.com/carrotist-coder/BeatSalers';

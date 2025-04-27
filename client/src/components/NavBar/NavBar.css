@@ -5,3 +5,53 @@
     width: 100%;
     z-index: 10;
 }
+
+.nav-link-custom {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    font-size: 1rem;
+    white-space: nowrap;
+}
+
+.custom-toggler {
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    line-height: 1;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 0.25rem;
+}
+
+.custom-toggler .navbar-toggler-icon {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+@media (max-width: 992px) {
+    .brand-title {
+        font-size: 0.9rem;
+    }
+
+    .nav-link-custom {
+        margin: 10px 0;
+        font-size: 0.9rem;
+        display: block;
+        text-align: center;
+    }
+
+    .custom-toggler {
+        padding: 0.2rem 0.4rem;
+    }
+
+    .custom-toggler .navbar-toggler-icon {
+        width: 1em;
+        height: 1em;
+    }
+}
+
+@media (max-width: 768px) {
+    .brand-title, .nav-link-custom {
+        font-size: 0.8rem;
+    }
+}

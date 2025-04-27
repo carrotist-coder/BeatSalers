@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import { Context } from '../../index.js';
 import Navbar from 'react-bootstrap/Navbar';
 import { Button, Container, Nav } from "react-bootstrap";
@@ -17,6 +17,22 @@ import {
 const NavBar = observer(() => {
     const { user } = useContext(Context);
     const navigate = useNavigate();
+    const [expanded, setExpanded] = useState(false);
+    const navbarRef = useRef();
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (navbarRef.current && !navbarRef.current.contains(event.target)) {
+                setExpanded(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
 
     const logOut = () => {
         localStorage.removeItem('token');
@@ -26,27 +42,49 @@ const NavBar = observer(() => {
     }
 
     return (
-        <Navbar bg="dark" variant="dark" className="navbar-fixed">
-            <Container>
-                <NavLink style={{ color: 'white', textDecoration: 'none' }} to={MAIN_ROUTE}>БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ</NavLink>
-                <Nav className="ml-auto align-items-center" style={{ color: 'white' }}>
-                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={BEATS_ROUTE}>Аранжировки</NavLink>
-                    <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={USERS_ROUTE}>Музыканты</NavLink>
-                    <NavLink
-                        style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }}
-                        to={ABOUT_ROUTE}
-                    >
-                        О колледже
-                    </NavLink>
-                    {user.isAuth ? (
-                        <>
-                            <NavLink style={{ color: 'white', textDecoration: 'none', marginRight: '30px' }} to={MY_PROFILE_ROUTE}>Профиль</NavLink>
-                            <Button variant={"outline-light"} onClick={logOut}>Выйти</Button>
-                        </>
-                    ) : (
-                        <Button variant={"outline-light"} onClick={() => navigate(AUTH_ROUTE)}>Авторизация</Button>
-                    )}
-                </Nav>
+        <Navbar
+            ref={navbarRef}
+            bg="dark"
+            variant="dark"
+            expand="lg"
+            expanded={expanded}
+            onToggle={() => setExpanded(!expanded)}
+            className="navbar-fixed"
+        >
+        <Container>
+            <Navbar.Brand
+                as={NavLink}
+                to={MAIN_ROUTE}
+                className="brand-title"
+                onClick={() => setExpanded(false)}
+            >
+                БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ
+            </Navbar.Brand>
+            <Navbar.Toggle
+                aria-controls="responsive-navbar-nav"
+                className="custom-toggler"
+            />
+                <Navbar.Collapse id="responsive-navbar-nav">
+                    <Nav className="ms-auto align-items-center" style={{ color: 'white' }}>
+                        <NavLink className="nav-link-custom" to={BEATS_ROUTE} onClick={() => setExpanded(false)}>Аранжировки</NavLink>
+                        <NavLink className="nav-link-custom" to={USERS_ROUTE} onClick={() => setExpanded(false)}>Музыканты</NavLink>
+                        <NavLink className="nav-link-custom" to={ABOUT_ROUTE} onClick={() => setExpanded(false)}>О колледже</NavLink>
+                        {user.isAuth ? (
+                            <>
+                                <NavLink className="nav-link-custom" to={MY_PROFILE_ROUTE} onClick={() => setExpanded(false)}>Профиль</NavLink>
+                                <Button className="nav-link-custom" variant={"outline-light"} onClick={() => {
+                                    logOut();
+                                    setExpanded(false);
+                                }}>Выйти</Button>
+                            </>
+                        ) : (
+                            <Button variant={"outline-light"} onClick={() => {
+                                setExpanded(false)
+                                navigate(AUTH_ROUTE)
+                            }}>Авторизация</Button>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );

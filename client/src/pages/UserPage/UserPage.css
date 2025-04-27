@@ -1,9 +1,6 @@
 .user-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -11,12 +8,11 @@
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-
+    padding-top: 50px;
 }
 
 .main-content {
     position: relative;
-    height: 100vh;
 }
 
 .audio-list-container {
@@ -33,7 +29,6 @@
     background-size: cover;
     background-position: center;
     filter: blur(10px);
-    z-index: 0;
 }
 
 .user-page__content-container {
@@ -84,6 +79,7 @@
     line-height: 1.4;
     margin-bottom: 15px;
     max-height: 200px;
+    min-width: 360px;
     overflow-y: auto;
 }
 
@@ -106,7 +102,7 @@
     justify-content: space-between;
 }
 
-.user-page__additional-text {
+.user-page__additional-text--last {
     margin-bottom: 15px;
 }
 
@@ -121,4 +117,92 @@
 
 .user-page__button:hover {
     transform: scale(1.02);
+}
+
+.password-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+}
+
+@media (max-width: 1200px) {
+    .user-page__button {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .user-page__title {
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+    }
+
+    .user-page__author {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .user-page__description {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        max-height: 150px;
+    }
+
+    .user-page__additional-text {
+        font-size: 0.8rem;
+    }
+
+    .user-page__button {
+        font-size: 0.8rem;
+    }
+
+    .user-page__button-section {
+        gap: 7px;
+    }
+
+    .user-page__beat-image {
+        max-height: 55vh;
+        margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        min-height: 100vh;
+    }
+
+    .user-page .row {
+        height: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .scrollable-content {
+        padding: 20px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .user-page__button-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .user-page__button {
+        font-size: 1rem;
+    }
+
+    .user-page__button--social {
+        order: 1;
+    }
+
+    .user-page__button--edit {
+        order: 2;
+    }
+
+    .user-page__button--back {
+        order: 3;
+    }
 }

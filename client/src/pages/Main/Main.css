@@ -10,17 +10,23 @@ html, body {
     overflow-x: hidden;
 }
 
-.main-container {
+.app-wrapper {
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 .content {
-    width: 100%;
-    padding: 40px 20px 0;
+    flex: 1;
+}
+
+.main-page-content {
+    padding-top: 80px;
 }
 
 .title {
     font-size: 3rem;
+    font-weight: 700;
     text-align: center;
     margin-bottom: 20px;
 }
@@ -46,6 +52,11 @@ html, body {
     width: 100%;
     object-fit: cover;
     filter: brightness(0.5);
+    transition: filter 0.3s ease;
+}
+
+.carousel-img:hover {
+    filter: brightness(0.6);
 }
 
 .carousel-caption h5,
@@ -53,3 +64,20 @@ html, body {
     color: white;
 }
 
+@media (max-width: 768px) {
+    .carousel-img {
+        height: 70vh;
+    }
+
+    .main-container {
+        overflow: hidden;
+    }
+
+    .content {
+        padding: 30px 0;
+    }
+
+    .main-page-content {
+        padding: 0;
+    }
+}
