@@ -60,7 +60,10 @@ const NavBar = observer(() => {
             >
                 БРЕСТСКИЙ МУЗЫКАЛЬНЫЙ КОЛЛЕДЖ
             </Navbar.Brand>
-            <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+            <Navbar.Toggle
+                aria-controls="responsive-navbar-nav"
+                className="custom-toggler"
+            />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="ms-auto align-items-center" style={{ color: 'white' }}>
                         <NavLink className="nav-link-custom" to={BEATS_ROUTE} onClick={() => setExpanded(false)}>Аранжировки</NavLink>
@@ -69,7 +72,7 @@ const NavBar = observer(() => {
                         {user.isAuth ? (
                             <>
                                 <NavLink className="nav-link-custom" to={MY_PROFILE_ROUTE} onClick={() => setExpanded(false)}>Профиль</NavLink>
-                                <Button variant={"outline-light"} onClick={() => {
+                                <Button className="nav-link-custom" variant={"outline-light"} onClick={() => {
                                     logOut();
                                     setExpanded(false);
                                 }}>Выйти</Button>
