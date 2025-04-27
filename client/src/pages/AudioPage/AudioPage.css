@@ -1,26 +1,21 @@
 .audio-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 50px;
 }
 
 .audio-page__blurred-background {
-    position: absolute;
+    position: fixed;
     top: -10px;
     left: -10px;
     width: calc(100% + 20px);
     height: calc(100% + 20px);
-    background-size: cover;
-    background-position: center;
     filter: blur(10px);
-    z-index: 0;
 }
 
 .audio-page__content-container {
-    height: 100vh;
     position: relative;
     z-index: 1;
     padding: 20px;
@@ -30,7 +25,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    margin-bottom: 30px;
 }
 
 .audio-page__image-wrapper {
@@ -72,10 +67,11 @@
 .audio-page__author {
     font-size: 1.7rem;
     margin-bottom: 15px;
+    cursor: pointer;
+    transition: color 0.3s;
 }
 
 .audio-page__author:hover {
-    cursor: pointer;
     color: rgba(0, 0, 255, 0.9);
 }
 
@@ -83,7 +79,8 @@
     font-size: 1rem;
     line-height: 1.4;
     margin-bottom: 15px;
-    max-height: 150px;
+    max-height: 120px;
+    min-width: 360px;
     overflow-y: auto;
 }
 
@@ -128,7 +125,9 @@
     justify-content: space-between;
 }
 
-.audio-page__back-button, .audio-page__buy-button, .audio-page__edit-button {
+.audio-page__back-button,
+.audio-page__buy-button,
+.audio-page__edit-button {
     font-size: 1.5rem;
     padding: 12px 30px;
     border-radius: 8px;
@@ -141,4 +140,78 @@
 .audio-page__buy-button:hover,
 .audio-page__edit-button:hover {
     transform: scale(1.02);
+}
+
+@media (max-width: 1200px) {
+    .audio-page__button {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .audio-page__title {
+        font-size: 2.5rem;
+    }
+
+    .audio-page__author {
+        font-size: 1.3rem;
+    }
+
+    .audio-page__description {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        max-height: 150px;
+    }
+
+    .audio-page__additional-text {
+        font-size: 0.9rem;
+    }
+
+    .audio-page__price-tag {
+        font-size: 1.5rem;
+        padding: 6px 12px;
+    }
+
+    .audio-page__beat-image {
+        max-height: 55vh;
+    }
+
+    .audio-page__button-section {
+        gap: 7px;
+    }
+
+    .audio-page__button {
+        font-size: 0.7rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .audio-page {
+        padding-top: 20px;
+    }
+
+    .audio-page__content-container {
+        min-height: calc(100vh - 20px);
+    }
+
+    .audio-page__button-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .audio-page__button {
+        font-size: 1rem;
+    }
+
+    .audio-page__buy-button {
+        order: 1;
+    }
+
+    .audio-page__edit-button {
+        order: 2;
+    }
+
+    .audio-page__back-button {
+        order: 3;
+    }
 }

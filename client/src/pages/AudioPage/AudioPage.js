@@ -113,14 +113,14 @@ function AudioPage() {
                             </audio>
                             <div className="audio-page__button-section">
                                 <Button
-                                    className="audio-page__back-button"
+                                    className="audio-page__button audio-page__back-button"
                                     variant="danger"
                                     onClick={handleBackClick}
                                 >
                                     Назад
                                 </Button>
                                 <Button
-                                    className="audio-page__buy-button"
+                                    className="audio-page__button audio-page__buy-button"
                                     variant="success"
                                     href={emailHref}
                                     target="_blank"
@@ -129,7 +129,7 @@ function AudioPage() {
                                 </Button>
                                 {isOwner && (
                                     <Button
-                                        className="audio-page__edit-button"
+                                        className="audio-page__button audio-page__edit-button"
                                         variant="warning"
                                         onClick={() => setEditModalOpen(true)}
                                     >
