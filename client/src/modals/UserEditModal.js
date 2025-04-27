@@ -171,7 +171,7 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
                         </Col>
                         <Col md={4}>
                             <Form.Group>
-                                <Form.Label>Подтвердите пароль</Form.Label>
+                                <Form.Label className="password-label">Подтвердите пароль</Form.Label>
                                 <Form.Control type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                             </Form.Group>
                         </Col>

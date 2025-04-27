@@ -119,6 +119,14 @@
     transform: scale(1.02);
 }
 
+.password-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+}
+
 @media (max-width: 1200px) {
     .user-page__button {
         font-size: 1rem;
