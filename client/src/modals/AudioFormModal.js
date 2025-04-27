@@ -132,7 +132,12 @@ function AudioFormModal({ show, onHide, beat = null, onUpdated, onAdded, sellerU
                             </Col>
                             <Col>
                                 <Form.Group>
-                                    <Form.Label>Цена (BYN)</Form.Label>
+                                    <Form.Label style={{
+                                        textOverflow: 'ellipsis',
+                                        whiteSpace: 'nowrap',
+                                    }}>
+                                        Цена (BYN)
+                                    </Form.Label>
                                     <Form.Control type="number" value={price} min="0" onChange={(e) => setPrice(e.target.value)} />
                                 </Form.Group>
                             </Col>
