@@ -18,7 +18,10 @@ html, body {
 
 .content {
     flex: 1;
-    padding: 40px 20px 0;
+}
+
+.main-page-content {
+    padding-top: 80px;
 }
 
 .title {
@@ -71,6 +74,10 @@ html, body {
     }
 
     .content {
-        padding: 30px 10px 0;
+        padding: 30px 0;
+    }
+
+    .main-page-content {
+        padding: 0;
     }
 }

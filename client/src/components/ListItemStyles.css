@@ -4,9 +4,8 @@
     flex-wrap: wrap;
     gap: 16px;
     width: 100%;
-    padding: 16px;
     margin-top: calc(16px + 16px);
-    box-sizing: border-box;
+    padding: 60px 20px 0;
 }
 
 .list__title {

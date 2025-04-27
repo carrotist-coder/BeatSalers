@@ -1,9 +1,6 @@
 .user-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    height: 100%;
+    width: 100%;
     overflow: hidden;
 }
 
@@ -32,7 +29,6 @@
     background-size: cover;
     background-position: center;
     filter: blur(10px);
-    z-index: 0;
 }
 
 .user-page__content-container {
@@ -171,6 +167,12 @@
 
     .user-page .row {
         height: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .scrollable-content {
+        padding: 20px 0;
     }
 }
 
