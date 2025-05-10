@@ -78,7 +78,7 @@ const NavBar = observer(() => {
                                 }}>Выйти</Button>
                             </>
                         ) : (
-                            <Button variant={"outline-light"} onClick={() => {
+                            <Button className="nav-link-custom" variant={"outline-light"} onClick={() => {
                                 setExpanded(false)
                                 navigate(AUTH_ROUTE)
                             }}>Авторизация</Button>
