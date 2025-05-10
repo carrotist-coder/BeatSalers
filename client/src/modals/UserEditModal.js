@@ -3,6 +3,8 @@ import { Modal, Form, Button, Row, Col } from 'react-bootstrap';
 import { updateAnyProfile, updateProfile, updateUser } from "../api";
 import { Context } from "../index";
 import DeleteConfirmModal from './DeleteConfirmModal';
+import {useNavigate} from "react-router-dom";
+import {USERS_ROUTE} from "../utils/consts";
 
 function UserEditModal({ show, onHide, user, onAccountDeleted }) {
     const originalUser = user.user;
@@ -22,6 +24,7 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
     const [removePhoto, setRemovePhoto] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const navigate = useNavigate();
 
     const handleSave = async () => {
         if (!name.trim()) {
@@ -234,7 +237,14 @@ function UserEditModal({ show, onHide, user, onAccountDeleted }) {
             <DeleteConfirmModal
                 show={showDeleteConfirm}
                 onHide={() => setShowDeleteConfirm(false)}
-                onDeleteSuccess={onAccountDeleted}
+                onDeleteSuccess={() => {
+                    if (isCurrentUser) {
+                        onAccountDeleted();
+                    } else {
+                        onHide(true);
+                        navigate(USERS_ROUTE);
+                    }
+                }}
                 userId={isCurrentUser ? null : originalUser.id}
             />
         </Modal>
