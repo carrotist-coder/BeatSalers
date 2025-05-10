@@ -4,3 +4,4 @@
 *.db
 *.sqlite
 /server/uploads/
+/server/coverage
