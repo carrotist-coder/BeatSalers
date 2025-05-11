@@ -2,7 +2,7 @@ import React from "react";
 import { Row, Col, Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import "./NotFoundPage.css";
-import {MAIN_ROUTE} from "../utils/consts";
+import {MAIN_ROUTE} from "../../utils/consts";
 
 function NotFoundPage() {
     const navigate = useNavigate();

@@ -2,12 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
-
-// Функция для проверки валидности email
-const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-};
+const {validateEmail, validateUsername} = require("../utils/helpers");
 
 // Метод для аутентификации пользователя (получение токена)
 const login = async (req, res, next) => {
@@ -75,6 +70,14 @@ const register = async (req, res, next) => {
         return next(ApiError.badRequest('Все поля обязательны для заполнения.'));
     }
 
+    if (!validateUsername(username)) {
+        return next(ApiError.badRequest('Имя пользователя должно начинаться с буквы и содержать только латинские буквы, цифры и символ "_".'));
+    }
+
+    if (password.length < 6) {
+        return next(ApiError.badRequest('Пароль должен быть длиной не менее 6 символов.'));
+    }
+
     if (!['user', 'admin'].includes(role)) {
         return next(ApiError.badRequest('Неверная роль пользователя. Доступные роли: "user" или "admin".'));
     }
@@ -103,9 +106,9 @@ const register = async (req, res, next) => {
 
                 const userId = this.lastID;
 
-                // Создание профиля в таблице user_profiles
+                // Создание профиля в таблице profiles
                 db.run(
-                    'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+                    'INSERT INTO profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
                     [userId, username, null, null, createdAt, createdAt],
                     function (profileErr) {
                         if (profileErr) {

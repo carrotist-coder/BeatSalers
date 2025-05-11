@@ -1,10 +1,17 @@
 const db = require('../db')();
 const ApiError = require('../error/ApiError');
 const bcrypt = require("bcrypt");
+const {validateEmail, validateUsername} = require("../utils/helpers");
 
 // Получить всех пользователей
 const getUsers = (req, res, next) => {
-    db.all('SELECT id, username, email, role, created_at FROM users', [], (err, rows) => {
+    db.all(`SELECT users.id, users.username, users.email, users.role, users.created_at,
+                   profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url,
+                   COUNT(beats.id) as beat_count
+            FROM users
+                     JOIN profiles ON users.id = profiles.user_id
+                     LEFT JOIN beats ON users.id = beats.seller_id
+            GROUP BY users.id`, [], (err, rows) => {
         if (err) {
             return next(ApiError.internal('Ошибка при получении списка пользователей'));
         }
@@ -13,17 +20,93 @@ const getUsers = (req, res, next) => {
 };
 
 // Получить информацию о текущем пользователе
-const getMyProfile = (req, res, next) => {
+const getMyProfile = async (req, res, next) => {
     const userId = req.user.id;
+    db.get(
+        `SELECT users.*, profiles.name, profiles.bio, profiles.social_media_link, profiles.photo_url
+         FROM users
+             JOIN profiles ON users.id = profiles.user_id
+         WHERE users.id = ?`,
+        [userId],
+        (err, row) => {
+            if (err) {
+                return next(ApiError.internal('Ошибка при получении профиля пользователя'));
+            }
+            if (!row) {
+                return next(ApiError.notFound('Профиль не найден'));
+            }
 
-    db.get('SELECT id, username, email, role, created_at FROM users WHERE id = ?', [userId], (err, row) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка при получении профиля пользователя'));
+            db.all(
+                `SELECT beats.*, users.username as seller_username
+                 FROM beats
+                          JOIN users ON beats.seller_id = users.id
+                 WHERE beats.seller_id = ?`,
+                [userId],
+                (beatsErr, beats) => {
+                    if (beatsErr) {
+                        return next(ApiError.internal('Ошибка при получении битов'));
+                    }
+
+                    const fullUser = {
+                        user: {
+                            id: row.id,
+                            username: row.username,
+                            email: row.email,
+                            role: row.role,
+                            created_at: row.created_at,
+                            updated_at: row.updated_at,
+                        },
+                        profile: {
+                            name: row.name,
+                            bio: row.bio,
+                            social_media_link: row.social_media_link,
+                            photo_url: row.photo_url,
+                        },
+                        beats: beats || [],
+                    };
+                    res.status(200).json(fullUser);
+                }
+            );
         }
-        if (!row) {
+    );
+};
+
+// Получить информацию о пользователе
+const getFullUserByUsername = (req, res, next) => {
+    const username = req.params.username;
+    db.get('SELECT * FROM users WHERE username = ?', [username], (err, user) => {
+        if (err) {
+            return next(ApiError.internal('Ошибка при получении пользователя'));
+        }
+        if (!user) {
             return next(ApiError.notFound('Пользователь не найден'));
         }
-        res.status(200).json(row);
+        db.get('SELECT * FROM profiles WHERE user_id = ?', [user.id], (profileErr, profile) => {
+            if (profileErr) {
+                return next(ApiError.internal('Ошибка при получении профиля'));
+            }
+            if (!profile) {
+                return next(ApiError.notFound('Профиль не найден'));
+            }
+            db.all(
+                `SELECT beats.*, users.username as seller_username 
+                 FROM beats 
+                 JOIN users ON beats.seller_id = users.id 
+                 WHERE beats.seller_id = ?`,
+                [user.id],
+                (beatsErr, beats) => {
+                    if (beatsErr) {
+                        return next(ApiError.internal('Ошибка при получении битов'));
+                    }
+                    const fullUser = {
+                        user: user,
+                        profile: profile,
+                        beats: beats
+                    };
+                    res.status(200).json(fullUser);
+                }
+            );
+        });
     });
 };
 
@@ -33,6 +116,19 @@ const addUser = async (req, res, next) => {
 
     if (!username || !password || !email || !role) {
         return next(ApiError.badRequest('Все поля обязательны для заполнения.'));
+    }
+
+    if (!validateUsername(username)) {
+        return next(ApiError.badRequest('Имя пользователя должно начинаться с буквы и содержать только латинские буквы, цифры и символ "_".'));
+    }
+
+    if (password.length < 6) {
+        return next(ApiError.badRequest('Пароль должен быть длиной не менее 6 символов.'));
+    }
+
+    // Проверяем валидность email
+    if (!validateEmail(email)) {
+        return next(ApiError.badRequest('Некорректный формат email.'));
     }
 
     if (!['user', 'admin'].includes(role)) {
@@ -55,9 +151,9 @@ const addUser = async (req, res, next) => {
             }
 
             const userId = this.lastID;
-            // Создание профиля в таблице user_profiles
+            // Создание профиля в таблице profiles
             db.run(
-                'INSERT INTO user_profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
+                'INSERT INTO profiles (user_id, name, bio, social_media_link, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?)',
                 [userId, username, null, null, createdAt, createdAt],
                 function (profileErr) {
                     if (profileErr) {
@@ -77,7 +173,7 @@ const addUser = async (req, res, next) => {
 // Функция для обновления пользователя
 const updateUser = async (req, res, next) => {
     const userId = parseInt(req.params.id, 10);
-    const { username, email, password, role } = req.body;
+    const { username, email, password, role, oldPassword } = req.body;
     const currentUserId = req.user.id;
     const currentUserRole = req.user.role;
 
@@ -86,25 +182,58 @@ const updateUser = async (req, res, next) => {
         return next(ApiError.badRequest('ID пользователя обязателен'));
     }
 
-    // Проверка прав доступа
-    if (currentUserRole !== 'admin' && userId !== currentUserId) {
+    if (!validateUsername(username)) {
+        return next(ApiError.badRequest('Имя пользователя должно начинаться с буквы и содержать только латинские буквы, цифры и символ "_".'));
+    }
+
+    const isSelf = userId === currentUserId;
+
+    if (currentUserRole !== 'admin' && !isSelf) {
         return next(ApiError.forbidden('Вы можете обновить только свой профиль.'));
     }
 
-    // Если передана новая роль, проверяем права администратора
-    if (role && currentUserRole !== 'admin') {
-        return next(ApiError.forbidden('Только администратор может изменять роли пользователей.'));
+    let newRole = null;
+    if (role) {
+        if (currentUserRole !== 'admin') {
+            return next(ApiError.forbidden('Только администратор может изменять роли пользователей.'));
+        }
+        if (role !== 'admin' && role !== 'user') {
+            return next(ApiError.badRequest('Недопустимая роль'));
+        }
+        newRole = role;
     }
 
     let hashedPassword;
 
     // Если передан новый пароль
     if (password) {
-        try {
-            hashedPassword = await bcrypt.hash(password, 5);
-        } catch (err) {
-            return next(ApiError.internal('Ошибка при хешировании пароля'));
+        if (password.length < 6) {
+            return next(ApiError.badRequest('Пароль должен быть длиной не менее 6 символов.'));
         }
+
+        // Получаем текущий хеш пароля из БД
+        const user = await new Promise((resolve, reject) => {
+            db.get('SELECT password FROM users WHERE id = ?', [userId], (err, row) => {
+                if (err) return reject(err);
+                if (!row) return reject(ApiError.notFound('Пользователь не найден'));
+                resolve(row);
+            });
+        });
+
+        // Только если НЕ админ — проверяем старый пароль
+        if (currentUserRole !== 'admin') {
+            const passwordMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!passwordMatch) {
+                return next(ApiError.badRequest('Неверный старый пароль'));
+            }
+        }
+
+        hashedPassword = await bcrypt.hash(password, 5);
+    }
+
+    // Проверяем валидность email
+    if (!validateEmail(email)) {
+        return next(ApiError.badRequest('Некорректный формат email.'));
     }
 
     const updatedAt = new Date().toISOString();
@@ -122,7 +251,7 @@ const updateUser = async (req, res, next) => {
 
     db.run(
         sql,
-        [username, email, hashedPassword || null, role || null, updatedAt, userId],
+        [username, email, hashedPassword || null, newRole || null, updatedAt, userId],
         function (err) {
             if (err) {
                 if (err.message.includes('UNIQUE constraint failed')) {
@@ -130,101 +259,63 @@ const updateUser = async (req, res, next) => {
                 }
                 return next(ApiError.internal('Ошибка при обновлении пользователя'));
             }
+
             if (this.changes === 0) {
                 return next(ApiError.notFound('Пользователь не найден'));
             }
+
             res.status(200).json({ message: 'Профиль успешно обновлен' });
         }
     );
 };
 
 // Удалить пользователя (только админ)
-const deleteUser = (req, res, next) => {
-    const userId = parseInt(req.params.id, 10);
+const deleteUser = async (req, res, next) => {
     const currentUserId = req.user.id;
     const currentUserRole = req.user.role;
+    const { password } = req.body;
+    const userId = req.params.id ? parseInt(req.params.id, 10) : currentUserId;
 
-    if (currentUserRole !== 'admin') {
-        return next(ApiError.forbidden('Только администратор может удалить пользователя.'));
+    if (!password) {
+        return next(ApiError.badRequest('Пароль обязателен для удаления аккаунта'));
     }
 
-    if (userId === currentUserId) {
-        return next(ApiError.forbidden('Вы не можете удалить свой профиль.'));
+    // Проверка доступа
+    if (currentUserRole !== 'admin' && userId !== currentUserId) {
+        return next(ApiError.forbidden('Вы можете удалить только свой аккаунт'));
     }
 
-    // Начало транзакции
-    db.run('BEGIN TRANSACTION', (err) => {
-        if (err) {
-            return next(ApiError.internal('Ошибка начала транзакции'));
-        }
+    // Проверка пароля
+    db.get('SELECT password FROM users WHERE id = ?', [currentUserRole === 'admin' ? currentUserId : userId], async (err, row) => {
+        if (err) return next(ApiError.internal('Ошибка при получении данных пользователя'));
+        if (!row) return next(ApiError.notFound('Пользователь не найден'));
 
-        // Удаление всех битов пользователя из таблицы beats
-        db.run('DELETE FROM beats WHERE seller_id = ?', [userId], function (beatsErr) {
-            if (beatsErr) {
-                db.run('ROLLBACK', () => {
-                    return next(ApiError.internal('Ошибка при удалении битов пользователя'));
-                });
-                return;
-            }
+        const passwordMatch = await bcrypt.compare(password, row.password);
+        if (!passwordMatch) return next(ApiError.forbidden('Неверный пароль'));
 
-            // Удаление профиля пользователя из таблицы user_profiles
-            db.run('DELETE FROM user_profiles WHERE user_id = ?', [userId], function (profileErr) {
-                if (profileErr) {
-                    db.run('ROLLBACK', () => {
-                        return next(ApiError.internal('Ошибка при удалении профиля пользователя'));
-                    });
-                    return;
-                }
+        db.run('BEGIN TRANSACTION', (transErr) => {
+            if (transErr) return next(ApiError.internal('Ошибка начала транзакции'));
 
-                // Удаление пользователя из таблицы users
-                db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
-                    if (userErr) {
-                        db.run('ROLLBACK', () => {
-                            return next(ApiError.internal('Ошибка при удалении пользователя'));
-                        });
-                        return;
-                    }
+            db.run('DELETE FROM beats WHERE seller_id = ?', [userId], function (beatsErr) {
+                if (beatsErr) return db.run('ROLLBACK', () => next(ApiError.internal('Ошибка при удалении битов пользователя')));
 
-                    if (this.changes === 0) {
-                        db.run('ROLLBACK', () => {
-                            return next(ApiError.notFound('Пользователь не найден'));
-                        });
-                        return;
-                    }
+                db.run('DELETE FROM profiles WHERE user_id = ?', [userId], function (profileErr) {
+                    if (profileErr) return db.run('ROLLBACK', () => next(ApiError.internal('Ошибка при удалении профиля пользователя')));
 
-                    // Если всё успешно, завершаем транзакцию
-                    db.run('COMMIT', (commitErr) => {
-                        if (commitErr) {
-                            return next(ApiError.internal('Ошибка завершения транзакции'));
+                    db.run('DELETE FROM users WHERE id = ?', [userId], function (userErr) {
+                        if (userErr || this.changes === 0) {
+                            return db.run('ROLLBACK', () => next(ApiError.internal('Ошибка при удалении пользователя')));
                         }
-                        res.status(200).json({ message: 'Пользователь, его профиль и все биты успешно удалены' });
+
+                        db.run('COMMIT', (commitErr) => {
+                            if (commitErr) return next(ApiError.internal('Ошибка завершения транзакции'));
+                            res.status(200).json({ message: 'Пользователь успешно удален' });
+                        });
                     });
                 });
             });
         });
     });
-};
-
-const getUserByUsername = (req, res, next) => {
-    const username = req.params.username;
-
-    if (!username) {
-        return next(ApiError.badRequest('Имя пользователя обязательно.'));
-    }
-
-    db.get(
-        'SELECT id, username, email, role, created_at FROM users WHERE username = ?',
-        [username],
-        (err, row) => {
-            if (err) {
-                return next(ApiError.internal('Ошибка при поиске пользователя'));
-            }
-            if (!row) {
-                return next(ApiError.notFound('Пользователь не найден'));
-            }
-            res.status(200).json(row);
-        }
-    );
 };
 
 module.exports = {
@@ -233,5 +324,5 @@ module.exports = {
     addUser,
     updateUser,
     deleteUser,
-    getUserByUsername,
+    getFullUserByUsername,
 };

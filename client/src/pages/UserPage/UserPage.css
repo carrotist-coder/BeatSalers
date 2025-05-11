@@ -1,0 +1,208 @@
+.user-page {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.scrollable-content {
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-top: 50px;
+}
+
+.main-content {
+    position: relative;
+}
+
+.audio-list-container {
+    padding: 20px;
+    background-color: #fff;
+}
+
+.user-page__blurred-background {
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: calc(100% + 20px);
+    height: calc(100% + 20px);
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px);
+}
+
+.user-page__content-container {
+    height: 100%;
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+}
+
+.user-page__image-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.user-page__image-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.user-page__beat-image {
+    max-height: 80vh;
+    width: auto;
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-page__info-section {
+    height: 100%;
+}
+
+.user-page__title {
+    font-size: 3.2rem;
+    font-weight: 700;
+    text-decoration: underline;
+    margin-bottom: 10px;
+}
+
+.user-page__author {
+    font-size: 1.7rem;
+    margin-bottom: 15px;
+}
+
+.user-page__description {
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-bottom: 15px;
+    max-height: 200px;
+    min-width: 360px;
+    overflow-y: auto;
+}
+
+.user-page__description::-webkit-scrollbar {
+    width: 8px;
+}
+
+.user-page__description::-webkit-scrollbar-track {
+    background: inherit;
+}
+
+.user-page__description::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.user-page__button-section {
+    display: flex;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.user-page__additional-text--last {
+    margin-bottom: 15px;
+}
+
+.user-page__button {
+    font-size: 1.5rem;
+    padding: 12px 30px;
+    border-radius: 8px;
+    transition: transform 0.3s;
+    flex: 1;
+    width: 100%;
+}
+
+.user-page__button:hover {
+    transform: scale(1.02);
+}
+
+.password-label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
+    max-width: 100%;
+}
+
+@media (max-width: 1200px) {
+    .user-page__button {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .user-page__title {
+        font-size: 2.5rem;
+        margin-bottom: 5px;
+    }
+
+    .user-page__author {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    .user-page__description {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        max-height: 150px;
+    }
+
+    .user-page__additional-text {
+        font-size: 0.8rem;
+    }
+
+    .user-page__button {
+        font-size: 0.8rem;
+    }
+
+    .user-page__button-section {
+        gap: 7px;
+    }
+
+    .user-page__beat-image {
+        max-height: 55vh;
+        margin-bottom: 20px;
+    }
+}
+
+@media (min-width: 992px) {
+    .main-content {
+        min-height: 100vh;
+    }
+
+    .user-page .row {
+        height: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .scrollable-content {
+        padding: 20px 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .user-page__button-section {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .user-page__button {
+        font-size: 1rem;
+    }
+
+    .user-page__button--social {
+        order: 1;
+    }
+
+    .user-page__button--edit {
+        order: 2;
+    }
+
+    .user-page__button--back {
+        order: 3;
+    }
+}

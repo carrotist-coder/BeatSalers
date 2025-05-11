@@ -1,0 +1,201 @@
+.user-list {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    margin-top: calc(16px + 16px);
+    padding: 60px 20px 0;
+}
+
+.list__title {
+    flex-basis: 100%;
+    text-align: center;
+}
+
+.user-list__row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
+.user-list__btn {
+    position: absolute;
+    right: 0;
+}
+
+.search-bar {
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.user-item {
+    flex-basis: calc(20% - 16px);
+    max-width: calc(20% - 16px);
+}
+
+.audio-item {
+    flex-basis: calc(25% - 16px);
+    max-width: calc(25% - 16px);
+}
+
+.price-footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.price-tag {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.additional-info {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.audio-item__username:hover {
+    cursor: pointer;
+    color: rgba(0, 0, 255, 0.9);
+}
+
+.checkmark-icon-sm {
+    width: 16px;
+    height: 16px;
+    margin-left: 7px;
+    margin-bottom: 2px;
+}
+
+.checkmark-icon {
+    width: 40px;
+    height: 40px;
+    margin-left: 15px;
+    margin-bottom: 5px;
+}
+
+.search-bar label {
+    display: block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.85rem;
+}
+
+.user-item {
+    flex-basis: calc(20% - 16px);
+    max-width: calc(20% - 16px);
+    display: flex;
+    align-items: stretch;
+}
+
+.user-item .card {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-item .card-body {
+    flex-grow: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.user-item .card-title {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-item .card-text {
+    flex-grow: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 1200px) {
+    .user-item {
+        flex-basis: calc(25% - 16px);
+        max-width: calc(25% - 16px);
+    }
+
+    .audio-item {
+        flex-basis: calc(33.33% - 16px);
+        max-width: calc(33.33% - 16px);
+    }
+}
+
+@media (max-width: 992px) {
+    .user-item {
+        flex-basis: calc(33.33% - 16px);
+        max-width: calc(33.33% - 16px);
+    }
+
+    .audio-item {
+        flex-basis: calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
+}
+
+@media (max-width: 768px) {
+    .user-item {
+        flex-basis: calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
+
+    .user-list__row {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .user-list__btn {
+        position: static;
+        margin-top: 8px;
+        width: 80%;
+    }
+
+    .audio-item {
+        flex-basis: calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
+
+    .audio-item .card-title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-size: 1rem;
+    }
+
+    .audio-item .card-text,
+    .additional-info {
+        font-size: 0.8rem;
+    }
+
+    .price-tag {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-bar {
+        margin-bottom: 16px;
+    }
+
+    .user-item {
+        flex-basis: calc(50% - 16px);
+        max-width: calc(50% - 16px);
+    }
+
+    .audio-item {
+        flex-basis: 100%;
+        max-width: 100%;
+    }
+}

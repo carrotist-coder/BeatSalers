@@ -33,6 +33,7 @@ const initializeDatabase = () => {
                                                      style TEXT NOT NULL,
                                                      bpm INTEGER,
                                                      audio_url TEXT NOT NULL,
+                                                     photo_url TEXT,
                                                      price REAL NOT NULL,
                                                      seller_id INTEGER NOT NULL,
                                                      created_at TEXT NOT NULL,
@@ -44,18 +45,19 @@ const initializeDatabase = () => {
             }
         });
 
-        // Создаем таблицу UserProfiles
-        db.run(`CREATE TABLE IF NOT EXISTS user_profiles (
+        // Создаем таблицу Profiles
+        db.run(`CREATE TABLE IF NOT EXISTS profiles (
                                                              user_id INTEGER UNIQUE,
                                                              name TEXT NOT NULL,
                                                              bio TEXT,
                                                              social_media_link TEXT,
+                                                             photo_url TEXT,
                                                              created_at TEXT NOT NULL,
                                                              updated_at TEXT NOT NULL,
                                                              FOREIGN KEY (user_id) REFERENCES users(id)
                 )`, (err) => {
             if (err) {
-                console.error('Ошибка при создании таблицы user_profiles:', err.message);
+                console.error('Ошибка при создании таблицы profiles:', err.message);
             }
         });
     });

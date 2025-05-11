@@ -1,25 +1,42 @@
 import React from "react";
 import { CardGroup, Card } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import "./UserStyles.css";
-import { PROFILE_ROUTE } from "../utils/consts";
+import { baseURL } from '../api';
+import "./ListItemStyles.css";
+import {truncateText} from "../utils/helpers";
+import {
+    DEFAULT_AVATAR_IMAGE_FILENAME,
+    DEFAULT_PATH,
+    NAME_VISIBLE_MAX_LENGTH,
+    SHORT_TEXT_MAX_LENGTH
+} from "../utils/consts";
 
-function UserItem() {
+function UserItem({ user }) {
     const navigate = useNavigate();
     const handleCardClick = () => {
-        navigate(PROFILE_ROUTE);
+        navigate('/profiles/' + user.username);
     };
+
+    const photoUrl = user.photo_url ? baseURL + user.photo_url : baseURL + DEFAULT_PATH + '/' + DEFAULT_AVATAR_IMAGE_FILENAME;
 
     return (
         <CardGroup className="user-item" onClick={handleCardClick}>
-            <Card style={{ cursor: "pointer" }}>
-                <Card.Img variant="top" src="https://dummyimage.com/300x300" />
-                <Card.Body>
-                    <Card.Title>Имя музыканта</Card.Title>
-                    <Card.Text>Тут находится биография или описание музыканта.</Card.Text>
+            <Card style={{ cursor: "pointer" }} className="h-100 d-flex flex-column">
+            <Card.Img variant="top" src={photoUrl} />
+                <Card.Body className="flex-grow-1">
+                <Card.Title>
+                        {truncateText(user.name, NAME_VISIBLE_MAX_LENGTH)}
+                        {user.role === 'admin' && (
+                            <img
+                                src={`${process.env.PUBLIC_URL}/media/checkmark.png`}
+                                alt="Админ"
+                                className="checkmark-icon-sm"
+                            />
+                        )}</Card.Title>
+                    <Card.Text>{truncateText(user.bio, SHORT_TEXT_MAX_LENGTH)}</Card.Text>
                 </Card.Body>
                 <Card.Footer>
-                    <small className="text-muted">Аранжировок: 2</small>
+                    <small className="text-muted">Аранжировок: {user.beat_count}</small>
                 </Card.Footer>
             </Card>
         </CardGroup>

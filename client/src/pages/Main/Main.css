@@ -1,0 +1,83 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+.app-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+}
+
+.main-page-content {
+    padding-top: 80px;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.carousel-wrapper {
+    max-width: 1500px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.carousel-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.carousel-image-wrapper {
+    position: relative;
+}
+
+.carousel-img {
+    height: 500px;
+    width: 100%;
+    object-fit: cover;
+    filter: brightness(0.5);
+    transition: filter 0.3s ease;
+}
+
+.carousel-img:hover {
+    filter: brightness(0.6);
+}
+
+.carousel-caption h5,
+.carousel-caption p {
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .carousel-img {
+        height: 70vh;
+    }
+
+    .main-container {
+        overflow: hidden;
+    }
+
+    .content {
+        padding: 30px 0;
+    }
+
+    .main-page-content {
+        padding: 0;
+    }
+}

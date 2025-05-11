@@ -17,10 +17,10 @@ router.post('/', authMiddleware(null), usersController.addUser);
 // - Пользователь может обновить только себя
 router.put('/:id', authMiddleware(null), usersController.updateUser);
 
-// Удалить пользователя (только админ)
-router.delete('/:id', authMiddleware('admin'), usersController.deleteUser);
+// Удалить пользователя (себя или другого, если админ)
+router.delete('/:id?', authMiddleware(null), usersController.deleteUser);
 
 // Получить пользователя по username
-router.get('/:username', authMiddleware(null, false), usersController.getUserByUsername);
+router.get('/:username', authMiddleware(null, false), usersController.getFullUserByUsername);
 
 module.exports = router;
