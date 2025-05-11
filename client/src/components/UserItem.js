@@ -28,7 +28,7 @@ function UserItem({ user }) {
                         {truncateText(user.name, NAME_VISIBLE_MAX_LENGTH)}
                         {user.role === 'admin' && (
                             <img
-                                src="/media/checkmark.png"
+                                src={`${process.env.PUBLIC_URL}/media/checkmark.png`}
                                 alt="Админ"
                                 className="checkmark-icon-sm"
                             />

@@ -23,32 +23,32 @@ export const ABOUT_CARDS_DATA = [
     {
         title: 'Колледж с историей и душой',
         text: 'Основанный в 1939 году, колледж стал первым музыкальным учебным заведением в Западной Беларуси, воспитавшим тысячи талантливых музыкантов. ',
-        imageUrl: '/media/about1.jpg'
+        imageUrl: `${process.env.PUBLIC_URL}/media/about1.jpg`
     },
     {
         title: 'Выпускники, покорившие сцену',
         text: 'Среди выпускников — участники ансамбля «Песняры», актриса Елена Воробей и композитор Игорь Корнелюк, чьи имена известны далеко за пределами Беларуси.',
-        imageUrl: '/media/about2.jpg'
+        imageUrl: `${process.env.PUBLIC_URL}/media/about2.jpg`
     },
     {
         title: 'Образование с перспективой',
         text: 'Колледж предлагает обучение по специальностям: инструментальное и вокальное исполнительство, музыковедение, хоровое искусство, открывая путь к успешной музыкальной карьере.',
-        imageUrl: '/media/about3.jpg'
+        imageUrl: `${process.env.PUBLIC_URL}/media/about3.jpg`
     },
     {
         title: 'Творчество без границ',
         text: 'Студенты участвуют в конкурсах, фестивалях и проектах, таких как «Молодежный музыкальный мост», сотрудничая с ведущими музыкальными академиями страны.',
-        imageUrl: '/media/about4.png'
+        imageUrl: `${process.env.PUBLIC_URL}/media/about4.png`
     },
     {
         title: 'Архитектурное и культурное наследие',
         text: 'Здание колледжа — не только учебное заведение, но и памятник архитектуры, являющийся центром музыкальной жизни Бреста.',
-        imageUrl: '/media/about5.jpg'
+        imageUrl: `${process.env.PUBLIC_URL}/media/about5.jpg`
     },
     {
         title: 'Педагоги — мастера своего дела',
         text: 'Преподаватели колледжа — признанные специалисты, многие из которых являются заслуженными артистами и деятелями искусств Беларуси.',
-        imageUrl: '/media/about6.jpg'
+        imageUrl: `${process.env.PUBLIC_URL}/media/about6.jpg`
     },
 ];
 
@@ -56,23 +56,23 @@ export const MAIN_CAROUSEL_DATA = [
     {
         title: 'Аранжировки',
         text: 'Лучшие музыкальные аранжировки от талантливых авторов',
-        imageUrl: '/media/main1.jpg',
+        imageUrl: `${process.env.PUBLIC_URL}/media/main1.jpg`,
         route: BEATS_ROUTE,
         alt: 'Аранжировки'
     },
     {
         title: 'Музыканты',
         text: 'Преподаватели, творческие коллективы и солисты нашего колледжа',
-        imageUrl: '/media/main2.jpg',
+        imageUrl: `${process.env.PUBLIC_URL}/media/main2.jpg`,
         route: USERS_ROUTE,
         alt: 'Музыканты'
     },
     {
         title: 'О колледже',
         text: 'Краткая информация о нашем колледже',
-        imageUrl: '/media/main3.jpg',
+        imageUrl: `${process.env.PUBLIC_URL}/media/main3.jpg`,
         route: ABOUT_ROUTE,
-        alt: 'Музыканты'
+        alt: 'О колледже'
     }
 ];
 

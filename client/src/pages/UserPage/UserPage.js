@@ -106,7 +106,7 @@ function UserPage() {
                                     <Card.Title className="user-page__title">{user.profile.name}
                                         {user.user.role === 'admin' && (
                                             <img
-                                                src="/media/checkmark.png"
+                                                src={`${process.env.PUBLIC_URL}/media/checkmark.png`}
                                                 alt="Админ"
                                                 className="checkmark-icon"
                                             />
