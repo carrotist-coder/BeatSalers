@@ -1,15 +1,13 @@
 // Функция для вычисления среднего цвета изображения
-export const getAverageColor = (img) => {
+export const getAverageColor = (img, step = 10) => {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
     // Устанавливаем размеры canvas по размерам изображения
     canvas.width = img.naturalWidth;
     canvas.height = img.naturalHeight;
     ctx.drawImage(img, 0, 0);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
+    const data = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
     let r = 0, g = 0, b = 0, count = 0;
-    const step = 10;
     for (let i = 0; i < data.length; i += 4 * step) {
         const alpha = data[i + 3];
         // Если пиксель полностью прозрачный, считаем его белым
