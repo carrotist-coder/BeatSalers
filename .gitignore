@@ -1,6 +1,8 @@
+/node_modules
 /server/node_modules/
 .idea/
 /server/.env
 *.db
 *.sqlite
 /server/uploads/
+/server/coverage
