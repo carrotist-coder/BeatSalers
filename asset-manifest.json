@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/BeatSalers/static/css/main.b03c9908.css",
-    "main.js": "/BeatSalers/static/js/main.b5e94c67.js",
+    "main.js": "/BeatSalers/static/js/main.bd1c92fc.js",
     "index.html": "/BeatSalers/index.html",
     "main.b03c9908.css.map": "/BeatSalers/static/css/main.b03c9908.css.map",
-    "main.b5e94c67.js.map": "/BeatSalers/static/js/main.b5e94c67.js.map"
+    "main.bd1c92fc.js.map": "/BeatSalers/static/js/main.bd1c92fc.js.map"
   },
   "entrypoints": [
     "static/css/main.b03c9908.css",
-    "static/js/main.b5e94c67.js"
+    "static/js/main.bd1c92fc.js"
   ]
 }
